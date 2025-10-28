@@ -1,0 +1,6 @@
+student_id,tipo_documento,identificacion,nombres,apellidos,puntaje,categoria,preferencia,fecha_inscripcion,has_titulo_superior
+S001,CÉDULA,1712345678,María Pérez,González,92.5,general,Ingeniería Civil,2025-03-15,False
+S002,CÉDULA,1712345679,Luis Gómez,Ortiz,88.0,rural,Medicina,2025-03-18,False
+S003,CÉDULA,1712345680,Ana Torres,Vega,95.0,general,Medicina,2025-03-10,False
+S004,CÉDULA,1712345681,Javier Ruiz,Mendoza,84.0,indigena,Ingeniería Civil,2025-03-20,False
+S005,CÉDULA,1712345682,Carla Soto,López,90.0,discapacidad,Arquitectura,2025-03-12,False
