@@ -7,9 +7,9 @@ from sigacc3 import (
 # Clase principal de la aplicación
 # Esta clase hereda de customtkinter.CTk para crear una ventana personalizada
 class App(ctk.CTk):
-    def _init_(self):
+    def __init__(self):
         # Inicializar la clase base CTk
-        super()._init_()
+        super().__init__()
         self.title("Sistema de Asignación de Cupos")
         self.geometry("800x500")
         ctk.set_appearance_mode("dark")
@@ -76,6 +76,6 @@ class App(ctk.CTk):
         self.lbl_resultado.configure(text=resultado)
 
 # Ejecutar la aplicación
-if _name_ == "_main_":
+if __name__ == "__main__":
     app = App()
     app.mainloop()
