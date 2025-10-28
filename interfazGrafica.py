@@ -4,12 +4,14 @@ from sigacc3 import (
     Postulante, Carrera, ProcesoAsignacion,
     VulnerabilidadFechaDesempate, Senescyt
 )
-
+# Clase principal de la aplicación
+# Esta clase hereda de customtkinter.CTk para crear una ventana personalizada
 class App(ctk.CTk):
-    def __init__(self):
-        super().__init__()
+    def _init_(self):
+        # Inicializar la clase base CTk
+        super()._init_()
         self.title("Sistema de Asignación de Cupos")
-        self.geometry("700x450")
+        self.geometry("800x500")
         ctk.set_appearance_mode("dark")
         ctk.set_default_color_theme("blue")
 
@@ -40,35 +42,40 @@ class App(ctk.CTk):
         self.proceso.carreras.append(self.carrera)
         self.proceso.postulantes.extend(self.postulantes)
 
+        # Crear la interfaz
         self.lbl_titulo = ctk.CTkLabel(self, text="Asignación de Cupos - SENESCYT", font=("Arial", 20, "bold"))
         self.lbl_titulo.pack(pady=15)
 
-        self.tabla = ctk.CTkTextbox(self, width=600, height=200, font=("Consolas", 13))
+        # Crear tabla para mostrar postulantes
+        self.tabla = ctk.CTkTextbox(self, width=700, height=300, font=("Consolas", 13))
         self.tabla.pack(pady=10)
         self.mostrar_postulantes()
-
+        
+        # Botón para asignar cupos
         self.btn_asignar = ctk.CTkButton(self, text="Ejecutar Asignación", command=self.asignar)
         self.btn_asignar.pack(pady=10)
 
+        # Etiqueta para mostrar el resultado de la asignación
         self.lbl_resultado = ctk.CTkLabel(self, text="", font=("Arial", 14))
         self.lbl_resultado.pack(pady=10)
 
+    #Muestra los postulantes en una tabla
     def mostrar_postulantes(self):
         self.tabla.delete("1.0", ctk.END)
-        self.tabla.insert("end", f"{'Nombre':<15}{'Apellido':<15}{'Puntaje':<10}{'Segmento':<20}{'Asignado':<10}\n")
-        self.tabla.insert("end", "-"*75 + "\n")
+        self.tabla.insert("end", f"{'Cedula':<20}{'Nombre':<15}{'Apellido':<15}{'Puntaje':<10}{'Segmento':<20}{'Asignado':<10}\n")
+        self.tabla.insert("end", "-"*90 + "\n")
         for p in self.postulantes:
             asignado = "✅" if any(ac.aceptado for ac in p.asignaciones) or bool(p.asignaciones) else "❌"
             segmento = p.segmentos[0] if p.segmentos else "N/A"
-            self.tabla.insert("end", f"{p.nombres:<15}{p.apellidos:<15}{p.puntaje:<10}{segmento:<20}{asignado:<10}\n")
+            self.tabla.insert("end", f"{p.identificacion:<20}{p.nombres:<15}{p.apellidos:<15}{p.puntaje:<10}{segmento:<20}{asignado:<10}\n")
         
-
+    #Asigna cupos a los postulantes
     def asignar(self):
         resultado = self.proceso.ejecutarAsignacion()
         self.mostrar_postulantes()
         self.lbl_resultado.configure(text=resultado)
 
-if __name__ == "__main__":
+# Ejecutar la aplicación
+if _name_ == "_main_":
     app = App()
     app.mainloop()
-
