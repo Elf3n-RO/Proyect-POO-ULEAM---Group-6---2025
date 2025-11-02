@@ -28,7 +28,7 @@ class App(ctk.CTk):
             Postulante("CÉDULA", "0000000001", "Derlis", "Carranza", 850.0, datetime.now()),
             Postulante("CÉDULA", "0000000002", "Steven", "Catagua", 820.0, datetime.now()),
             Postulante("CÉDULA", "0000000003", "Jofre", "Cedeño", 900.0, datetime.now()),
-            Postulante("CÉDULA", "0000000004", "Oleg", "Kuznetsov", 880.0, datetime.now()),
+            Postulante("CÉDULA", "0000000004", "Alex", "Kuznetsov", 880.0, datetime.now()),
         ]
 
         # Ajustar segmentos de ejemplo (simula lo que antes se pasaba)
