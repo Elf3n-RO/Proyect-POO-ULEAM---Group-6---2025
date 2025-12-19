@@ -1,3 +1,4 @@
+# Sistema (Estructural)
 
 from datetime import datetime
 from sigacc3 import ProcesoAsignacion

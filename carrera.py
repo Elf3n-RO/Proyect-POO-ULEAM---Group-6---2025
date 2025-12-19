@@ -1,3 +1,5 @@
+# Builder (Creacional)
+
 from typing import Dict
 from interfazGrafica import ICupoManager
 from sigacc3 import AsignacionCupo, Postulante
