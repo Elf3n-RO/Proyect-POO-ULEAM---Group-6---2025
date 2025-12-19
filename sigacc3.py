@@ -265,12 +265,13 @@ class PoblacionGeneral(Segmento):
 
 # Clase Carrera (implementa ICupoManager)
 class Carrera(ICupoManager):
-    def __init__(self, codigo: str, nombre: str, cuposTotales: int):
+    def __init__(self, codigo: str, nombre: str, cuposTotales: int, cuposPorSegmento: Dict[str, int]):
+        # Init ahora recibe los segmentos ya calculados, para separar construcción
         self.codigo = codigo
         self.nombre = nombre.upper()
         self.cuposTotales = cuposTotales
         self.cuposDisponibles = cuposTotales
-        self.cuposPorSegmento: Dict[str, int] = {}
+        self.cuposPorSegmento = cuposPorSegmento
 
     def segmentarCupos(self) -> None:
         # Segmentación según Art. 52-53
@@ -297,7 +298,7 @@ class Carrera(ICupoManager):
         return False
 
     def liberarCupo(self) -> None:
-        self.cuposDisponibles += 1
+        self.cuposDisponibles += 1   
 
 # Clase AsignacionCupo (implementa ICupoManager)
 class AsignacionCupo(ICupoManager):
