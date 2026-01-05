@@ -1,3 +1,5 @@
+# Strategy
+
 from typing import List
 from abc import ABC, abstractmethod
 from .modelos import Postulante
