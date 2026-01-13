@@ -6,11 +6,29 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
     <style>
         /* Estilos para que la tabla no rompa tu estética */
-        .tabla-datos { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; color: black; border-radius: 8px; overflow: hidden; }
-        .tabla-datos th, .tabla-datos td { padding: 10px; border: 1px solid #ccc; }
-        .tabla-datos th { background: #d32f2f; color: white; }
-        .btn-logica { background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        .tabla-datos { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 15px; 
+            background: white; 
+            color: black; 
+            border-radius: 8px; 
+            overflow: hidden; 
+            margin-bottom: 30px;
+        }
+        .tabla-datos th, .tabla-datos td { padding: 12px; border: 1px solid #ccc; text-align: left; }
+        .tabla-datos th { background: #d32f2f; color: white; text-transform: uppercase; font-size: 0.9em; }
+        .btn-logica { background: #28a745; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+        .btn-logica:hover { background: #218838; transform: scale(1.02); }
         .msg-logica { background: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
+        
+        .titulo-seccion { 
+            color: white; 
+            border-left: 5px solid #d32f2f; 
+            padding-left: 15px; 
+            margin-top: 40px; 
+            font-size: 1.8em;
+        }
     </style>
 </head>
 
@@ -21,34 +39,36 @@
             <p class="logo">SAC</p>
             <nav>
                 {% if admin_logeado %}
+                    <a href="/admin-panel">Panel Inicio</a>
                     <a href="/">Cerrar Sesión</a>
                 {% else %}
-                    <a href="#">Configuracion</a>
+                    <a href="#">Soporte</a>
                 {% endif %}
             </nav>
         </div>
     </header>
 
-    <section id="principal">
+    <section id="principal" style="height: auto; min-height: 80vh; padding-bottom: 50px;">
         <div class="container">
             <div class="imagen"></div>
             
             {% if not admin_logeado %}
                 <h1>Bienvenido al Sistema de Asignación de Cupos</h1>
                 <form action="/login" method="POST" class="POST">
-                    <label for="correo">✉️Correo Institucinal</label>
+                    <label for="correo">✉️ Correo Institucional</label>
                     <input type="email" id="correo" name="correo" required>
-                    <label for="contrasena">🔒Contraseña</label>
+                    <label for="contrasena">🔒 Contraseña</label>
                     <input type="password" id="contrasena" name="contrasena" required>
                     <button type="submit">Iniciar Sesión</button>
                 </form>
             {% else %}
-                <h1>Panel de Administración SAC</h1>
+                <h1 style="text-align: center;">Panel de Administración SAC</h1>
                 
                 {% if mensaje %}
                     <div class="msg-logica">SISTEMA: {{ mensaje }}</div>
                 {% endif %}
 
+                <h2 class="titulo-seccion">Ofertas Académicas</h2>
                 <table class="tabla-datos">
                     <thead>
                         <tr>
@@ -72,11 +92,37 @@
                     </tbody>
                 </table>
 
-                <form action="/ejecutar-asignacion" method="POST">
-                    <button type="submit" class="btn-logica">
-                        Ejecutar Asignación de Cupos (Art. 51)
-                    </button>
-                </form>
+                <h2 class="titulo-seccion">Postulantes</h2>
+                <table class="tabla-datos">
+                    <thead>
+                        <tr>
+                            <th>Identificación</th>
+                            <th>Nombre Completo</th>
+                            <th>Puntaje</th>
+                            <th>Fecha Registro</th>
+                            <th>Vulnerabilidad</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for p in postulantes %}
+                        <tr>
+                            <td>{{ p.identificacion }}</td>
+                            <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                            <td style="color: #2e7d32; font-weight: bold; font-size: 1.1em;">{{ p.puntaje }}</td>
+                            <td>{{ p.fecha_inscripcion.strftime('%Y-%m-%d') }}</td>
+                            <td>{{ p.vulnerabilidad }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <div style="text-align: center; margin-top: 30px;">
+                    <form action="/ejecutar-asignacion" method="POST">
+                        <button type="submit" class="btn-logica">
+                            🚀 Ejecutar Asignación de Cupos (Art. 51)
+                        </button>
+                    </form>
+                </div>
             {% endif %}
         </div>
     </section>

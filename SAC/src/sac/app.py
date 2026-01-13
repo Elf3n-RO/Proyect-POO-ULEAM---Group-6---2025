@@ -21,7 +21,8 @@ carreras_admin = [
 # Lista global de postulantes (simulación)
 postulantes_db = [
     Postulante("CEDULA", "1312345678", "JUAN", "PEREZ", 950.0, datetime.now()),
-    Postulante("CEDULA", "1309876543", "MARIA", "LOOR", 880.5, datetime.now())
+    Postulante("CEDULA", "1309876543", "MARIA", "LOOR", 880.5, datetime.now()),
+    Postulante("CEDULA", "1323456789", "CARLOS", "GOMEZ", 920.0, datetime.now())
 ]
 
 # --- RUTAS DE NAVEGACIÓN GENERAL ---
@@ -149,9 +150,11 @@ def update_estudiante():
 
 @app.route('/admin-panel')
 def admin_panel():
-    # Verificamos si los datos de sesión existen (opcional pero recomendado)
     if session.get('correo') == "admin@uleam.edu.ec":
-        return render_template('admin.html', admin_logeado=True, carreras=carreras_admin)
+        return render_template('admin.html', 
+                               admin_logeado=True, 
+                               carreras=carreras_admin, 
+                               postulantes=postulantes_db) # Pasamos los postulantes
     return redirect(url_for('index'))
 
 # --- ACCIONES DEL POSTULANTE ---
