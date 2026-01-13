@@ -1,62 +1,94 @@
 from datetime import datetime
-from typing import List
 from interfaz import IReportable
-from carrera import Carrera
-from modelos import Postulante
+from conexion import obtener_conexion
+
 
 class ProcesoAsignacion(IReportable):
+
     def __init__(self, desempate_strategy, senescyt):
-        self.carreras: List[Carrera] = []
-        self.postulantes: List[Postulante] = []
         self.fechaEjecucion = datetime.now()
         self._desempate_strategy = desempate_strategy
         self._senescyt = senescyt
 
     def ejecutarAsignacion(self) -> str:
         self.procesarAsignacionPorSegmento()
-        self.gestionarReasignacion()
-        self.resolverEmpate()
-        self.redistribuirCupos()
         return "Asignación ejecutada (Art. 51)."
 
     def procesarAsignacionPorSegmento(self) -> str:
-        orden_segmentos = [
-            'PoliticaCuotas', 'Vulnerabilidad', 'MeritoAcademico',
-            'OtrosReconocimientos', 'BachilleresPueblos',
-            'BachilleresGeneral', 'PoblacionGeneral'
-        ]
+        conn = obtener_conexion()
+        cursor = conn.cursor()
 
-        for carrera in self.carreras:
-            carrera.segmentarCupos()
-            for seg_tipo in orden_segmentos:
-                postulantes_seg = [p for p in self.postulantes if seg_tipo in p.segmentos]
-                postulantes_seg.sort(key=lambda p: p.calcularPuntaje(), reverse=True)
+        # 🔹 Estudiantes ordenados por puntaje y prioridad
+        cursor.execute("""
+            SELECT 
+                e.id_estudiante,
+                p.id_carrera
+            FROM estudiantes e
+            JOIN postulaciones p ON e.id_estudiante = p.id_estudiante
+            LEFT JOIN asignaciones a ON e.id_estudiante = a.id_estudiante
+            JOIN carreras c ON p.id_carrera = c.id_carrera
+            WHERE a.id_estudiante IS NULL
+              AND c.cupos_disponibles > 0
+            ORDER BY 
+                e.puntaje DESC,
+                p.prioridad ASC
+        """)
 
-                for postulante in postulantes_seg:
-                    if carrera.verificarDisponibilidad(seg_tipo):
-                        carrera.asignarCupo(postulante)
+        registros = cursor.fetchall()
+
+        for id_estudiante, id_carrera in registros:
+
+            # 🔹 Verificar cupos actualizados
+            cursor.execute("""
+                SELECT cupos_disponibles
+                FROM carreras
+                WHERE id_carrera = ?
+            """, (id_carrera,))
+
+            resultado = cursor.fetchone()
+
+            if not resultado:
+                continue
+
+            cupos = resultado[0]
+
+            if cupos > 0:
+                # 🔹 Registrar asignación
+                cursor.execute("""
+                    INSERT INTO asignaciones (
+                        id_estudiante,
+                        id_carrera,
+                        fecha_asignacion,
+                        aceptado
+                    )
+                    VALUES (?, ?, GETDATE(), 1)
+                """, (id_estudiante, id_carrera))
+
+                # 🔹 Actualizar cupos
+                cursor.execute("""
+                    UPDATE carreras
+                    SET cupos_disponibles = cupos_disponibles - 1
+                    WHERE id_carrera = ?
+                """, (id_carrera,))
+
+        conn.commit()
+        conn.close()
         return "Asignación por segmento procesada."
-
-    def gestionarReasignacion(self) -> str:
-        for postulante in self.postulantes:
-            if not any(ac.aceptado for ac in postulante.asignaciones):
-                if not postulante.has_titulo_superior:
-                    postulante.segmentos.append('PoblacionGeneral')
-        return "Reasignaciones gestionadas."
-
-    def resolverEmpate(self) -> str:
-        empatados = [p for p in self.postulantes if len(p.segmentos) > 1][:2]
-        if len(empatados) > 1:
-            ganador = self._desempate_strategy.resolve(empatados)
-            return f"Empate resuelto: {ganador.nombres} {ganador.apellidos}"
-        return "Sin empates."
-
-    def redistribuirCupos(self) -> str:
-        return "Cupos redistribuidos a población general."
 
     def generarReportes(self) -> str:
         return "Reportes de asignación generados."
 
     def generarReporteConsolidado(self) -> str:
-        aceptados = sum(1 for p in self.postulantes for ac in p.asignaciones if ac.aceptado)
-        return f"Consolidado: {aceptados} cupos aceptados."
+        conn = obtener_conexion()
+        cursor = conn.cursor()
+
+        cursor.execute("""
+            SELECT COUNT(*) 
+            FROM asignaciones
+            WHERE aceptado = 1
+        """)
+
+        total = cursor.fetchone()[0]
+        conn.close()
+
+        return f"Consolidado: {total} cupos aceptados."
