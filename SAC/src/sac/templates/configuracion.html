@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Configuración de Carreras</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .config-card { background: white; padding: 20px; border-radius: 10px; margin-bottom: 10px; color: black; display: flex; justify-content: space-between; align-items: center; }
+        input[type="number"] { width: 80px; padding: 5px; border-radius: 5px; }
+    </style>
+</head>
+<body style="background-color: #333;">
+    <div class="container" style="padding-top: 50px;">
+        <h1 style="text-align: center;">Ajuste de Cupos por Carrera</h1>
+        
+        {% for carrera in carreras %}
+        <div class="config-card">
+            <div>
+                <strong>{{ carrera.nombre }}</strong> ({{ carrera.codigo }})
+                <br><small>Segmentos: 15% Vuln | 20% Mérito</small>
+            </div>
+            <form action="/actualizar-cupos" method="POST" style="display: flex; gap: 10px;">
+                <input type="hidden" name="codigo" value="{{ carrera.codigo }}">
+                <input type="number" name="cupos" value="{{ carrera.cuposTotales }}">
+                <button type="submit" style="padding: 5px 10px; background: #28a745;">Actualizar</button>
+            </form>
+        </div>
+        {% endfor %}
+        
+        <div style="text-align: center; margin-top: 30px;">
+            <a href="/" style="color: white; text-decoration: none; border: 1px solid white; padding: 10px 20px; border-radius: 10px;">Finalizar y Salir</a>
+        </div>
+    </div>
+</body>
+</html>

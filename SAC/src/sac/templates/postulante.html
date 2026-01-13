@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGACC Web - Postulante</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+</head>
+
+<body>
+
+    <header>
+        <div class="imagen"></div>
+        <div class="container">
+            <p class="logo">SAC</p>
+            <nav>
+                <a href="/">Cerrar Sesión</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="principal">
+        <div class="container">
+            <div class="imagen"></div>
+            <h1>Panel de Postulante</h1>
+            <p>Bienvenido al sistema de asignación de cupos. Aquí podrá ver el estado de su postulación y los resultados una vez se haya realizado la asignación.</p>
+            <form action="/ver-estado" method="POST" class="POST">
+                <button type="submit">Ver Estado de Postulación</button>
+        </div>
+    </section>
+
+    <section id="ayuda">
+        <div class="container">
+            <nav>
+                <a href="#">Soporte tecnico</a>
+            </nav>
+        </div>
+    </section>
+
+</body>
+</html>

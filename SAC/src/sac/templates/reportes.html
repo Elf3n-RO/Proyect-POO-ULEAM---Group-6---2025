@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Generar Reportes - SAC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body style="background-color: #f4f4f4;">
+    <header><div class="container"><p class="logo">SAC REPORTES</p></div></header>
+    
+    <section id="principal" style="height: 400px;">
+        <div class="container">
+            <h1 style="margin-top: 50px;">Seleccione el Formato de Salida</h1>
+            <p style="color: white; font-size: 1.2em; margin-bottom: 30px;">Lógica de validación Senescyt activa</p>
+            
+            <form action="/report" method="POST" class="POST">
+                <select name="formato" style="padding: 15px; border-radius: 10px; margin-bottom: 20px;">
+                    <option value="pdf">📄 Documento PDF (Oficial)</option>
+                    <option value="excel">📊 Hoja de Excel (Consolidado)</option>
+                </select>
+                <button type="submit">Descargar Reporte Ahora</button>
+                <a href="/" style="color: white; margin-top: 15px; text-decoration: none;">← Volver al Panel</a>
+            </form>
+        </div>
+    </section>
+</body>
+</html>

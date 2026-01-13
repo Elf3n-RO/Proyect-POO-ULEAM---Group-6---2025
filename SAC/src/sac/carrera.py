@@ -1,5 +1,5 @@
 from typing import Dict
-from .interfaz import ICupoManager
+from interfaz import ICupoManager
 
 class Carrera(ICupoManager):
     def __init__(self, codigo: str, nombre: str, cuposTotales: int):

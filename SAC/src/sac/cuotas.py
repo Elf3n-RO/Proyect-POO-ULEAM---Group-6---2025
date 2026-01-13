@@ -2,7 +2,7 @@
 
 from typing import List
 from abc import ABC, abstractmethod
-from .modelos import Postulante
+from modelos import Postulante
 
 class Segmento(ABC):
     def __init__(self, tipo: str, codigo: int, porcentaje_min: float, porcentaje_max: float):

@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>SIGACC Web - Admin</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Estilos para que la tabla no rompa tu estética */
+        .tabla-datos { width: 100%; border-collapse: collapse; margin-top: 20px; background: white; color: black; border-radius: 8px; overflow: hidden; }
+        .tabla-datos th, .tabla-datos td { padding: 10px; border: 1px solid #ccc; }
+        .tabla-datos th { background: #d32f2f; color: white; }
+        .btn-logica { background: #28a745; color: white; padding: 15px; border: none; border-radius: 8px; cursor: pointer; margin-top: 20px; font-weight: bold; }
+        .msg-logica { background: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
+    </style>
+</head>
+
+<body>
+    <header>
+        <div class="imagen"></div>
+        <div class="container">
+            <p class="logo">SAC</p>
+            <nav>
+                {% if admin_logeado %}
+                    <a href="/">Cerrar Sesión</a>
+                {% else %}
+                    <a href="#">Configuracion</a>
+                {% endif %}
+            </nav>
+        </div>
+    </header>
+
+    <section id="principal">
+        <div class="container">
+            <div class="imagen"></div>
+            
+            {% if not admin_logeado %}
+                <h1>Bienvenido al Sistema de Asignación de Cupos</h1>
+                <form action="/login" method="POST" class="POST">
+                    <label for="correo">✉️Correo Institucinal</label>
+                    <input type="email" id="correo" name="correo" required>
+                    <label for="contrasena">🔒Contraseña</label>
+                    <input type="password" id="contrasena" name="contrasena" required>
+                    <button type="submit">Iniciar Sesión</button>
+                </form>
+            {% else %}
+                <h1>Panel de Administración SAC</h1>
+                
+                {% if mensaje %}
+                    <div class="msg-logica">SISTEMA: {{ mensaje }}</div>
+                {% endif %}
+
+                <table class="tabla-datos">
+                    <thead>
+                        <tr>
+                            <th>Carrera</th>
+                            <th>Cupos Totales</th>
+                            <th>Vulnerabilidad (15%)</th>
+                            <th>Mérito (20%)</th>
+                            <th>Disponibles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for carrera in carreras %}
+                        <tr>
+                            <td>{{ carrera.nombre }}</td>
+                            <td>{{ carrera.cuposTotales }}</td>
+                            <td>{{ carrera.cuposPorSegmento.get('Vulnerabilidad', 0) }}</td>
+                            <td>{{ carrera.cuposPorSegmento.get('MeritoAcademico', 0) }}</td>
+                            <td><strong>{{ carrera.cuposDisponibles }}</strong></td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+
+                <form action="/ejecutar-asignacion" method="POST">
+                    <button type="submit" class="btn-logica">
+                        Ejecutar Asignación de Cupos (Art. 51)
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </section>
+
+    <section id="ayuda">
+        <div class="container">
+            <nav>
+                {% if admin_logeado %}
+                    <a href="/report-page">Generar Reporte</a>
+                    <form action="/audit" method="POST" style="display:inline;"><button type="submit" style="background:none; border:none; color:black; font-weight:bold; cursor:pointer;">Auditoría</button></form>
+                    <a href="/config-page">Configuración</a>
+                {% else %}
+                    <a href="#">Soporte técnico</a>
+                    <a href="#">¿Necesitas Ayuda?</a>
+                {% endif %}
+            </nav>
+        </div>
+    </section>
+</body>
+</html>

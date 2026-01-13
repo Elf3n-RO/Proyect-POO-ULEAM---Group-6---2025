@@ -1,6 +1,6 @@
 from typing import List
-from .interfaz import IDesempateStrategy
-from .modelos import Postulante
+from interfaz import IDesempateStrategy
+from modelos import Postulante
 
 class VulnerabilidadFechaDesempate(IDesempateStrategy):
     def resolve(self, postulantes: List[Postulante]) -> Postulante:

@@ -1,7 +1,7 @@
 from datetime import datetime
 from typing import List
-from .interfaz import IValidable
-from .carrera import Carrera
+from interfaz import IValidable
+from carrera import Carrera
 
 class Postulante(IValidable):
     def __init__(self, tipo_documento: str, identificacion: str, nombres: str, apellidos: str, puntaje: float, fecha_inscripcion: datetime, has_titulo_superior: bool = False):

@@ -1,6 +1,6 @@
 from typing import Dict, List
 from datetime import datetime
-from .interfaz import IReportable
+from interfaz import IReportable
 
 class Senescyt(IReportable):
     def __init__(self):

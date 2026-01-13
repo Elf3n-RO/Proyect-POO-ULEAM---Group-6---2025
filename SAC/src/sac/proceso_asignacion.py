@@ -1,8 +1,8 @@
 from datetime import datetime
 from typing import List
-from .interfaz import IReportable
-from .carrera import Carrera
-from .modelos import Postulante
+from interfaz import IReportable
+from carrera import Carrera
+from modelos import Postulante
 
 class ProcesoAsignacion(IReportable):
     def __init__(self, desempate_strategy, senescyt):

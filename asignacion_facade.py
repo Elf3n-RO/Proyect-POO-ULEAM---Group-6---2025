@@ -2,7 +2,7 @@
 
 from datetime import datetime
 from sigacc3 import ProcesoAsignacion
-from carrera import CarreraBuilder
+from carrera2 import CarreraBuilder
 from sigacc3 import Postulante
 from sigacc3 import VulnerabilidadFechaDesempate
 

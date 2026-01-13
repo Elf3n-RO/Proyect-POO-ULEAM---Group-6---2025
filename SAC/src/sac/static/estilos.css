@@ -1,0 +1,138 @@
+/*Estilo principal de la pagina*/
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/*Estilo general de la pagina*/
+body {
+    font-family: 'Times New Roman', Times, serif;
+    margin: 0;   
+}
+
+/*Estilo de texto*/
+p{ font-size: 2em; 
+    color: rgb(255, 255, 255);
+    background-position: center;
+    margin-bottom: 100px;
+    padding-top: 10px;
+}
+h1 { font-size: 2em; 
+     color: rgb(232, 115, 115);
+     background-position: center;
+     margin-bottom: 100px;
+     padding-top: 10px;
+}
+
+/*Estilo de general*/
+.container {
+    max-width: 1400px;
+    margin: auto;
+}
+
+/*Estilo de header*/
+header {
+    height: 80px;
+    background-color: rgb(118, 111, 111);  
+}
+
+header .container {
+    flex-direction: row;
+    justify-content: space-between;
+    display: flex;
+    color: rgba(254, 254, 254, 0.893);
+}
+
+header .logo{
+    margin: 0;
+    padding: 25px 30px;
+    font-weight: bold;
+    color: black;
+    font-size: 2em;
+}
+
+header nav {
+    display: flex;
+    flex-direction: row;
+    text-align: right;
+    padding-top: 18px;
+    padding-right: 20px;
+}
+
+header a {
+    padding: 15px 12px;
+    text-decoration: none;
+    font-weight: bold;
+    color: black;
+}
+
+header a:hover {
+    color: darkred;
+}
+
+/*Estilo de footer*/
+footer {
+    height: 60px;
+    background-color: rgb(118, 111, 111);
+    color: white;
+    text-align: center;
+    padding-top: 20px;
+}
+
+/*Estilo de seccion principal*/
+#principal {
+    height: 550px;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    background-image: linear-gradient(
+        0deg,
+        rgba(0,0,0,0.5),
+        rgba(0,0,0,0.5)
+    )
+    ,url("media/banner1.jpg");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: top center;
+}
+
+#principal form button {
+    margin-top: 20px;
+    padding: 10px 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    color: white;
+    background-color: rgb(232, 115, 115);
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+#principal form button:hover {
+    background-color: darkred;
+}
+
+/*Estilo section de ayuda*/
+#ayuda {
+    height: 79px;
+    background-color: rgb(118, 111, 111);
+}
+
+#ayuda .container {
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#ayuda a {
+    text-decoration: none;
+    color: black;
+    font-weight: bold;
+}
+
+#ayuda a:hover {
+    color: darkred;
+}
