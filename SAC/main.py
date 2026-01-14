@@ -21,21 +21,3 @@ def run_demo():
     p1.condicion_socioeconomica = 'SI'
     p1.determinarSegmentos()
 
-    p2 = Postulante('CÉDULA', '1712345679', 'Steven Sne yder', 'Catagua Cedeño', 820.0, datetime.now())
-    p2.merito_academico = 'SI'
-    p2.determinarSegmentos()
-
-    proceso.postulantes.extend([p1, p2])
-
-    print('--- Ejecutando asignación demo ---')
-    print(proceso.ejecutarAsignacion())
-    print(proceso.resolverEmpate())
-
-    for postulante in proceso.postulantes:
-        if postulante.asignaciones:
-            print(postulante.asignaciones[0].registrarAceptacionCupo())
-
-    print(proceso.generarReporteConsolidado())
-
-if __name__ == '__main__':
-    run_demo()
