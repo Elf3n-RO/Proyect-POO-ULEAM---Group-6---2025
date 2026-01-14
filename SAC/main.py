@@ -20,6 +20,7 @@ def run_demo():
     p1 = Postulante('CÉDULA', '1712345678', 'Derlis Dario', 'Carranza Acosta', 850.0, datetime.now())
     p1.condicion_socioeconomica = 'SI'
     p1.determinarSegmentos()
+    
     p2 = Postulante('CÉDULA', '1712345679', 'Steven Sne yder', 'Catagua Cedeño', 820.0, datetime.now())
     p2.merito_academico = 'SI'
     p2.determinarSegmentos()
