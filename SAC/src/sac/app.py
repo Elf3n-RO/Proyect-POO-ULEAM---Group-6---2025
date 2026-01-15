@@ -3,7 +3,7 @@ from datetime import datetime
 import pyodbc
 
 # Importación de tu lógica original
-from modelos import Postulante
+from modelos import Postulante, PreferenciaCarrera, AsignacionCupo
 from carrera import Carrera
 from proceso_asignacion import ProcesoAsignacion
 from desempate import VulnerabilidadFechaDesempate
@@ -147,28 +147,63 @@ def update_cupos():
 
 @app.route('/ejecutar-asignacion', methods=['POST'])
 def ejecutar_asignacion():
-    # Aquí instanciamos tu lógica de clases
-    estrategia = VulnerabilidadFechaDesempate()
-    entidad_control = Senescyt()
-    proceso = ProcesoAsignacion(estrategia, entidad_control)
+    # 1. Configurar Estrategia de Desempate
+    est_id = session.get('estrategia_id', 'vuln')
+    estrategia = MeritoAcademicoDesempate() if est_id == 'merito' else VulnerabilidadFechaDesempate()
     
-    # Cargamos datos de SQL a la lógica
+    proceso = ProcesoAsignacion(estrategia, Senescyt())
+    
     conn = get_db_connection()
     cursor = conn.cursor()
-    cursor.execute("SELECT codigo, nombre, cupos_totales FROM carreras")
-    proceso.carreras = [Carrera(r.codigo, r.nombre, r.cupos_totales) for r in cursor.fetchall()]
+
+    # 2. Cargar Carreras (Objetos)
+    cursor.execute("SELECT id_carrera, codigo, nombre, cupos_totales FROM carreras")
+    carreras_dict = {}
+    for r in cursor.fetchall():
+        obj_c = Carrera(r.codigo, r.nombre, r.cupos_totales)
+        obj_c.id_sql = r.id_carrera
+        carreras_dict[r.id_carrera] = obj_c
     
-    res_asignacion = proceso.ejecutarAsignacion() 
-    mensaje = f"{res_asignacion} | Procesado con éxito."
+    proceso.carreras = list(carreras_dict.values())
+
+    # 3. Cargar Postulantes y sus Preferencias (Relación SQL)
+    cursor.execute("""
+        SELECT p.*, pref.id_preferencia, pref.id_carrera, pref.prioridad 
+        FROM postulantes p
+        LEFT JOIN preferencias_carrera pref ON p.id_postulante = pref.id_postulante
+    """)
+    
+    postulantes_map = {}
+    for r in cursor.fetchall():
+        if r.identificacion not in postulantes_map:
+            p = Postulante(r.tipo_documento, r.identificacion, r.nombres, r.apellidos, 
+                           float(r.puntaje), r.fecha_inscripcion)
+            # Mapeo de campos de desempate
+            p.vulnerabilidad = float(r.vulnerabilidad)
+            p.merito_academico = r.merito_academico
+            postulantes_map[r.identificacion] = p
+        
+        # Crear objeto de Preferencia
+        obj_p = postulantes_map[r.identificacion]
+        obj_c = carreras_dict.get(r.id_carrera)
+        if obj_c:
+            pref = PreferenciaCarrera(obj_p, obj_c, r.prioridad, obj_c.nombre, r.id_carrera, r.id_preferencia)
+            obj_p.preferenciaCarrera.append(pref)
+
+    proceso.postulantes = list(postulantes_map.values())
+
+    # 4. Ejecución del Motor de Asignación
+    msg = proceso.ejecutarAsignacion()
+
+    # 5. Persistencia: Actualizar cupos en SQL
+    for c in proceso.carreras:
+        cursor.execute("UPDATE carreras SET cupos_disponibles = ? WHERE codigo = ?", 
+                       (c.cuposDisponibles, c.codigo))
+    
+    conn.commit()
     conn.close()
 
-    # Redirigimos al panel para ver los cambios reflejados
-    return redirect(url_for('admin_panel'))
-
-
-@app.route('/report-page', methods=['POST'])
-def report_page():
-    return render_template('reportes.html')
+    return redirect(url_for('admin_panel', mensaje=msg))
 
 
 if __name__ == '__main__':

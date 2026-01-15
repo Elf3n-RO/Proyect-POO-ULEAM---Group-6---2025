@@ -89,6 +89,43 @@
                         </table>
                     </div>
                 </details>
+                
+                <details style="margin-bottom: 20px; border-radius: 10px;">
+                    <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                        👥 Postulantes y Estados de Asignación
+                        <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
+                    </summary>
+                    <div style="padding: 15px;">
+                        <table class="tabla-datos">
+                            <thead>
+                                <tr>
+                                    <th>Identificación</th>
+                                    <th>Postulante</th>
+                                    <th>Puntaje</th>
+                                    <th>Vulnerabilidad</th>
+                                    <th>Asignación</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in postulantes %}
+                                <tr>
+                                    <td>{{ p.identificacion }}</td>
+                                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                                    <td><strong>{{ p.puntaje }}</strong></td>
+                                    <td>{{ p.vulnerabilidad }}</td>
+                                    <td>
+                                        {% if p.asignaciones %}
+                                            <b style="color: green;">ASIGNADO: {{ p.asignaciones[0].carrera.nombre }}</b>
+                                        {% else %}
+                                            <i style="color: #999;">Pendiente</i>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
 
                 <div style="text-align: center; margin-top: 30px;">
                     <form action="/ejecutar-asignacion" method="POST">
@@ -96,6 +133,17 @@
                             🚀 Ejecutar Asignación de Cupos (Art. 51)
                         </button>
                     </form>
+                    <p id="msgCarga" style="display:none; color: white; margin-top: 10px;">
+                        ⏳ Procesando algoritmos de desempate y actualizando base de datos...
+                    </p>
+                </div>
+
+                <script>
+                function mostrarCarga() {
+                    document.getElementById('btnAsignar').style.display = 'none';
+                    document.getElementById('msgCarga').style.display = 'block';
+                }
+                </script>
                 </div>
             {% endif %}
         </div>
