@@ -96,7 +96,7 @@ function mostrarFormularioAlta() {
             <div class="config-card">
                 <h2 class="seccion-titulo" style="color: black; border-color: darkred;">⚖️ Parámetros de Desempate</h2>
                 <form action="/set-desempate" method="POST">
-                    <label>Prioridad de Desempate (Art. 51):</label>
+                    <label style="color: #333;">Prioridad de Desempate (Art. 51):</label>
                     <select name="estrategia" style="width: 100%; padding: 10px; border-radius: 10px; margin: 10px 0;">
                         <option value="vuln">1. Índice de Vulnerabilidad -> 2. Fecha Inscripción</option>
                         <option value="merito">1. Mérito Académico -> 2. Vulnerabilidad</option>
@@ -105,50 +105,7 @@ function mostrarFormularioAlta() {
                 </form>
             </div>
 
-<div class="config-card">
-    <h2 class="seccion-titulo" style="color: black; border-color: darkred;">👤 Gestión de Estudiantes</h2>
-    
-    <form action="/search-estudiante" method="POST" style="display: flex; gap: 10px; margin-bottom: 20px;">
-        <input type="text" name="cedula" placeholder="Cédula del postulante..." required style="flex-grow: 1;">
-        <button type="submit" style="margin: 0; background: #333;">🔍 Buscar</button>
-    </form>
 
-    {% if mensaje_estudiante %}
-        <p style="color: red;">{{ mensaje_estudiante }}</p>
-    {% endif %}
-
-    {% if estudiante %}
-    <div style="background: #f9f9f9; padding: 20px; border-radius: 10px; border: 1px solid #ccc; color: black;">
-        <h3>Editando a: {{ estudiante.nombres }} {{ estudiante.apellidos }}</h3>
-        <form action="/update-estudiante" method="POST">
-            <input type="hidden" name="id_original" value="{{ estudiante.identificacion }}">
-            
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px;">
-                <div>
-                    <label style="color: #333;">Nombres:</label>
-                    <input type="text" name="nombres" value="{{ estudiante.nombres }}" style="width: 100%;">
-                </div>
-                <div>
-                    <label style="color: #333;">Apellidos:</label>
-                    <input type="text" name="apellidos" value="{{ estudiante.apellidos }}" style="width: 100%;">
-                </div>
-            </div>
-
-            <div style="margin-top: 10px;">
-                <label style="color: #333;">Puntaje:</label>
-                <input type="number" step="0.01" name="puntaje" value="{{ estudiante.puntaje }}" style="width: 100%;">
-            </div>
-
-            <div style="margin-top: 15px; padding: 10px; background: #eee; border-radius: 5px; font-size: 0.9em;">
-                <strong>Info adicional:</strong><br>
-                Vulnerabilidad: {{ estudiante.vulnerabilidad }} | Título Superior: {{ "SÍ" if estudiante.has_titulo_superior else "NO" }}
-            </div>
-            
-            <button type="submit" style="background: green; width: 100%; margin-top: 15px;">💾 Guardar Cambios</button>
-        </form>
-    </div>
-    {% endif %}
-</div>
 
         </div>
     </section>

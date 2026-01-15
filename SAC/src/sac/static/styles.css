@@ -168,21 +168,3 @@ button:hover {
     background-color: darkred;
 }
 
-#ayuda nav form {
-    display: flex;
-    flex-direction: row;     
-    flex-wrap: nowrap;        
-    gap: 15px;                
-    justify-content: center;   
-    align-items: center;      
-    margin: 20px 0;
-    width: 200px;
-}
-
-#ayuda nav form button {
-    min-width: 200px;          
-    padding: 12px 30px;        
-    font-size: 1em;
-    border-radius: 10px;       
-    font-weight: 500;
-}

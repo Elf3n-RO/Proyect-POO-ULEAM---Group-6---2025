@@ -139,43 +139,6 @@ def update_cupos():
     conn.close()
     return redirect(url_for('config_page'))
 
-# --- GESTIÓN DE ESTUDIANTES ---
-
-@app.route('/search-estudiante', methods=['POST'])
-def search_estudiante():
-    cedula = request.form.get('cedula')
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("SELECT * FROM postulantes WHERE identificacion = ?", (cedula,))
-    estudiante = cursor.fetchone()
-    
-    # Necesitamos las carreras para el select del HTML
-    cursor.execute("SELECT codigo, nombre FROM carreras")
-    carreras = cursor.fetchall()
-    conn.close()
-
-    if estudiante:
-        return render_template('configuracion.html', estudiante=estudiante, carreras=carreras)
-    return render_template('configuracion.html', mensaje_estudiante="No encontrado.", carreras=carreras)
-
-@app.route('/update-estudiante', methods=['POST'])
-def update_estudiante():
-    id_org = request.form.get('id_original')
-    nombres = request.form.get('nombres')
-    apellidos = request.form.get('apellidos')
-    puntaje = float(request.form.get('puntaje'))
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    cursor.execute("""
-        UPDATE postulantes 
-        SET nombres = ?, apellidos = ?, puntaje = ? 
-        WHERE identificacion = ?""", 
-        (nombres.upper(), apellidos.upper(), puntaje, id_org))
-    conn.commit()
-    conn.close()
-    return redirect(url_for('config_page'))
-
 # --- PROCESO DE ASIGNACIÓN ---
 
 @app.route('/ejecutar-asignacion', methods=['POST'])
@@ -197,6 +160,10 @@ def ejecutar_asignacion():
 
     # Redirigimos al panel para ver los cambios reflejados
     return redirect(url_for('admin_panel'))
+
+@app.route('/report-page', methods=['POST'])
+def report_page():
+    return render_template('reportes.html')
 
 if __name__ == '__main__':
     app.run(debug=True)

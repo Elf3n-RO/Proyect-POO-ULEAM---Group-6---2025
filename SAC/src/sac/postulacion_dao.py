@@ -1,11 +1,11 @@
 from conexion import obtener_conexion
 
-def insertar_postulacion(id_estudiante, id_carrera, prioridad):
+def insertar_postulacion(id_postulante, id_carrera, prioridad):
     conn = obtener_conexion()
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO postulaciones (id_estudiante, id_carrera, prioridad)
+        INSERT INTO postulantes (id_postulante, id_carrera, prioridad)
         VALUES (?, ?, ?)
     """)
 

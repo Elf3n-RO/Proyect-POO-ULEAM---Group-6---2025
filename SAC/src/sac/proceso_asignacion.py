@@ -20,23 +20,22 @@ class ProcesoAsignacion(IReportable):
 
         # 🔹 Estudiantes ordenados por puntaje y prioridad
         cursor.execute("""
-            SELECT 
-                e.id_estudiante,
-                p.id_carrera
-            FROM estudiantes e
-            JOIN postulaciones p ON e.id_estudiante = p.id_estudiante
-            LEFT JOIN asignaciones a ON e.id_estudiante = a.id_estudiante
-            JOIN carreras c ON p.id_carrera = c.id_carrera
-            WHERE a.id_estudiante IS NULL
-              AND c.cupos_disponibles > 0
-            ORDER BY 
+            SELECT  
+                e.id_postulante,
+                c.id_carrera
+            FROM postulantes e
+            LEFT JOIN asignaciones a ON e.id_postulante = a.id_postulante
+            JOIN carreras c ON e.id_carrera = c.id_carrera
+            WHERE a.id_postulante IS NULL
+                AND c.cupos_disponibles > 0
+            ORDER BY  
                 e.puntaje DESC,
-                p.prioridad ASC
+                e.prioridad ASC;
         """)
 
         registros = cursor.fetchall()
 
-        for id_estudiante, id_carrera in registros:
+        for id_postulante, id_carrera in registros:
 
             # 🔹 Verificar cupos actualizados
             cursor.execute("""
@@ -56,13 +55,13 @@ class ProcesoAsignacion(IReportable):
                 # 🔹 Registrar asignación
                 cursor.execute("""
                     INSERT INTO asignaciones (
-                        id_estudiante,
+                        id_postulante,
                         id_carrera,
                         fecha_asignacion,
                         aceptado
                     )
                     VALUES (?, ?, GETDATE(), 1)
-                """, (id_estudiante, id_carrera))
+                """, (id_postulante, id_carrera))
 
                 # 🔹 Actualizar cupos
                 cursor.execute("""

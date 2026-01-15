@@ -40,6 +40,7 @@
             <nav>
                 {% if admin_logeado %}
                     <a href="/admin-panel">Panel Inicio</a>
+                    <a href="/config-page">Configuración</a>
                     <a href="/">Cerrar Sesión</a>
                 {% else %}
                     <a href="#">Soporte</a>
@@ -131,8 +132,9 @@
         <div class="container">
             <nav>
                 {% if admin_logeado %}
-                    <a href="/report-page">Generar Reporte</a>
-                    <a href="/config-page">Configuración</a>
+                    <form action="/report-page" method="POST">
+                        <button type="submit">📊 Generar Reportes</button>
+                    </form>
                 {% else %}
                     <a href="#">Soporte técnico</a>
                     <a href="#">¿Necesitas Ayuda?</a>

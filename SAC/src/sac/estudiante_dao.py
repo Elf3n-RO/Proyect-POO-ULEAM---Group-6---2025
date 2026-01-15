@@ -5,7 +5,7 @@ def insertar_estudiante(cedula, nombres, puntaje):
     cursor = conn.cursor()
 
     cursor.execute("""
-        INSERT INTO estudiantes (cedula, nombres, puntaje)
+        INSERT INTO postulantes (cedula, nombres, puntaje)
         VALUES (?, ?, ?)
     """, (cedula, nombres, puntaje))
 
@@ -18,8 +18,8 @@ def obtener_estudiantes_por_puntaje():
     cursor = conn.cursor()
 
     cursor.execute("""
-        SELECT id_estudiante, puntaje
-        FROM estudiantes
+        SELECT id_postulante, puntaje
+        FROM postulantes
         ORDER BY puntaje DESC
     """)
 
