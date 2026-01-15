@@ -13,7 +13,6 @@
             <p class="logo">SAC</p>
             <nav>
                 {% if admin_logeado %}
-                    <a href="/config-page">Configuración</a>
                     <a href="/admin-panel">Panel Inicio</a>
                     <a href="/config-page">Configuración</a>
                     <a href="/">Cerrar Sesión</a>
@@ -25,72 +24,71 @@
     </header>
 
     <section id="principal" style="height: auto; min-height: 80vh; padding-bottom: 50px;">
-        <div class="container">
-            <div class="imagen"></div>
-            
-            {% if not admin_logeado %}
-                <h1>Bienvenido al Sistema de Asignación de Cupos</h1>
-                <form action="/login" method="POST" class="POST">
-                    <label for="correo">✉️ Correo Institucional</label>
-                    <input type="email" id="correo" name="correo" required>
-                    <label for="contrasena">🔒 Contraseña</label>
-                    <input type="password" id="contrasena" name="contrasena" required>
-                    <button type="submit">Iniciar Sesión</button>
-                </form>
-            {% else %}
-                <h1 style="text-align: center;">Panel de Administración SAC</h1>
+    <div class="container">
+        {% if admin_logeado %}
+            <h1 style="text-align: center; margin-bottom: 30px;">Panel de Administración SAC</h1>
+
+            <details open style="margin-bottom: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <span>Ofertas Académicas</span>
+                    <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
+                </summary>
                 
-                {% if mensaje %}
-                    <div class="msg-logica">SISTEMA: {{ mensaje }}</div>
-                {% endif %}
+                <div style="padding: 15px;">
+                    <table class="tabla-datos">
+                        <thead>
+                            <tr>
+                                <th>Código</th>
+                                <th>Carrera</th>
+                                <th>Cupos Totales</th>
+                                <th>Disponibles</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for carrera in carreras %}
+                            <tr>
+                                <td style="font-family: monospace; font-weight: bold;">{{ carrera.codigo }}</td>
+                                <td>{{ carrera.nombre }}</td>
+                                <td>{{ carrera.cuposTotales }}</td>
+                                <td><strong style="color: #d32f2f;">{{ carrera.cuposDisponibles }}</strong></td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </details>
 
-                <h2 class="titulo-seccion">Ofertas Académicas</h2>
-                <table class="tabla-datos">
-                    <thead>
-                        <tr>
-                            <th>Carrera</th>
-                            <th>Cupos Totales</th>
-                            <th>Vulnerabilidad (15%)</th>
-                            <th>Mérito (20%)</th>
-                            <th>Disponibles</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for carrera in carreras %}
-                        <tr>
-                            <td>{{ carrera.nombre }}</td>
-                            <td>{{ carrera.cuposTotales }}</td>
-                            <td>{{ carrera.cuposPorSegmento.get('Vulnerabilidad', 0) }}</td>
-                            <td>{{ carrera.cuposPorSegmento.get('MeritoAcademico', 0) }}</td>
-                            <td><strong>{{ carrera.cuposDisponibles }}</strong></td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                <details style="margin-bottom: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
+                    <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                        <span>Postulantes Registrados</span>
+                        <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
+                    </summary>
 
-                <h2 class="titulo-seccion">Postulantes</h2>
-                <table class="tabla-datos">
-                    <thead>
-                        <tr>
-                            <th>Identificación</th>
-                            <th>Nombre Completo</th>
-                            <th>Puntaje</th>
-                            <th>Fecha Registro</th>
-                            <th>Vulnerabilidad</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for p in postulantes %}
-                        <tr>
-                            <td>{{ p.identificacion }}</td>
-                            <td>{{ p.nombres }} {{ p.apellidos }}</td>
-                            <td style="color: #2e7d32; font-weight: bold; font-size: 1.1em;">{{ p.puntaje }}</td>
-                            <td>{{ p.fecha_inscripcion.strftime('%Y-%m-%d') }}</td>
-                            <td>{{ p.vulnerabilidad }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
+                    <div style="padding: 15px;">
+                        <table class="tabla-datos">
+                            <thead>
+                                <tr>
+                                    <th>Identificación</th>
+                                    <th>Nombre Completo</th>
+                                    <th>Puntaje</th>
+                                    <th>Vulnerabilidad</th>
+                                    <th>Fecha Registro</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for p in postulantes %}
+                                <tr>
+                                    <td>{{ p.identificacion }}</td>
+                                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
+                                    <td style="color: #2e7d32; font-weight: bold;">{{ p.puntaje }}</td>
+                                    <td>{{ p.vulnerabilidad }}</td>
+                                    <td>{{ p.fecha_inscripcion.strftime('%Y-%m-%d') }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </details>
 
                 <div style="text-align: center; margin-top: 30px;">
                     <form action="/ejecutar-asignacion" method="POST">
@@ -110,8 +108,6 @@
 
                     <form action="/report-page" method="POST">
                         <button type="submit">📊 Generar Reportes</button>
-                    <form action="/report-page" method="POST" class="POST">
-                        <button type="submit">Generar Reporte</button>
 
                     </form>
                 {% else %}

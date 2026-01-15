@@ -173,24 +173,7 @@ button:hover {
     background-color: darkred;
 }
 
-#ayuda nav form {
-    display: flex;
-    flex-direction: row;     
-    flex-wrap: nowrap;        
-    gap: 15px;                
-    justify-content: center;   
-    align-items: center;      
-    margin: 20px 0;
-    width: 200px;
-}
 
-#ayuda nav form button {
-    min-width: 200px;          
-    padding: 12px 30px;        
-    font-size: 1em;
-    border-radius: 10px;       
-    font-weight: 500;
-}
 
 /* Estilos para la tabla*/
 .tabla-datos { 
@@ -217,3 +200,19 @@ button:hover {
     font-size: 1.8em;
 }
 
+/* Quita la flecha por defecto de Chrome/Safari */
+summary::-webkit-details-marker {
+    display: none;
+}
+
+/* Efecto al pasar el mouse por el título desplegable */
+summary:hover {
+    background: #b71c1c; /* Un rojo más oscuro */
+    transition: 0.3s;
+}
+
+/* Animación suave al abrir */
+details[open] summary {
+    border-bottom: 2px solid white;
+    margin-bottom: 10px;
+}

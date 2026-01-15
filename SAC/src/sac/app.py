@@ -17,7 +17,7 @@ def get_db_connection():
     # Ajusta 'SERVER' al nombre de tu PC o 'localhost'
     conn_str = (
         "DRIVER={SQL Server};"
-        "SERVER=DESKTOP-3MAKMH3\SQLEXPRESS;"
+        "SERVER=DESKTOP-JDTRNFK\SQLEXPRESS;"
         "DATABASE=AsignacionCuposULEAM;"
         "Trusted_Connection=yes;"
     )
