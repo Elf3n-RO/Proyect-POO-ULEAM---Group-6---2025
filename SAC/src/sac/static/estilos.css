@@ -33,8 +33,7 @@ h1 { font-size: 2em;
 
 /*Estilo de header*/
 header {
-    height: 80px;
-    background-color: rgb(118, 111, 111);  
+    height: 80px; 
 }
 
 header .container {

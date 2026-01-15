@@ -17,7 +17,7 @@ def get_db_connection():
     # Ajusta 'SERVER' al nombre de tu PC o 'localhost'
     conn_str = (
         "DRIVER={SQL Server};"
-        "SERVER=DESKTOP-JDTRNFK\SQLEXPRESS;"
+        "SERVER=DESKTOP-3MAKMH3\SQLEXPRESS;"
         "DATABASE=AsignacionCuposULEAM;"
         "Trusted_Connection=yes;"
     )
@@ -90,6 +90,10 @@ def admin_panel():
                            postulantes=postulantes)
 
 # --- RUTAS DE GESTIÓN (CONFIGURACIÓN) ---
+@app.route('/report-page', methods=['POST'])
+def generar_reporte():
+    if not session.get("correo"): return redirect(url_for("index"))
+    return render_template("reportes.html",)
 
 @app.route('/config-page')
 def config_page():
@@ -161,9 +165,11 @@ def ejecutar_asignacion():
     # Redirigimos al panel para ver los cambios reflejados
     return redirect(url_for('admin_panel'))
 
+
 @app.route('/report-page', methods=['POST'])
 def report_page():
     return render_template('reportes.html')
+
 
 if __name__ == '__main__':
     app.run(debug=True)

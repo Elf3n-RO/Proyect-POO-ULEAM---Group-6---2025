@@ -4,32 +4,6 @@
     <meta charset="UTF-8">
     <title>SIGACC Web - Admin</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <style>
-        /* Estilos para que la tabla no rompa tu estética */
-        .tabla-datos { 
-            width: 100%; 
-            border-collapse: collapse; 
-            margin-top: 15px; 
-            background: white; 
-            color: black; 
-            border-radius: 8px; 
-            overflow: hidden; 
-            margin-bottom: 30px;
-        }
-        .tabla-datos th, .tabla-datos td { padding: 12px; border: 1px solid #ccc; text-align: left; }
-        .tabla-datos th { background: #d32f2f; color: white; text-transform: uppercase; font-size: 0.9em; }
-        .btn-logica { background: #28a745; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
-        .btn-logica:hover { background: #218838; transform: scale(1.02); }
-        .msg-logica { background: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
-        
-        .titulo-seccion { 
-            color: white; 
-            border-left: 5px solid #d32f2f; 
-            padding-left: 15px; 
-            margin-top: 40px; 
-            font-size: 1.8em;
-        }
-    </style>
 </head>
 
 <body>
@@ -39,6 +13,7 @@
             <p class="logo">SAC</p>
             <nav>
                 {% if admin_logeado %}
+                    <a href="/config-page">Configuración</a>
                     <a href="/admin-panel">Panel Inicio</a>
                     <a href="/config-page">Configuración</a>
                     <a href="/">Cerrar Sesión</a>
@@ -132,8 +107,12 @@
         <div class="container">
             <nav>
                 {% if admin_logeado %}
+
                     <form action="/report-page" method="POST">
                         <button type="submit">📊 Generar Reportes</button>
+                    <form action="/report-page" method="POST" class="POST">
+                        <button type="submit">Generar Reporte</button>
+
                     </form>
                 {% else %}
                     <a href="#">Soporte técnico</a>
