@@ -66,38 +66,6 @@
                     </table>
                 </div>
             </details>
-
-                <details style="margin-bottom: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                    <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
-                        <span>Postulantes Registrados</span>
-                        <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
-                    </summary>
-
-                    <div style="padding: 15px;">
-                        <table class="tabla-datos">
-                            <thead>
-                                <tr>
-                                    <th>Identificación</th>
-                                    <th>Nombre Completo</th>
-                                    <th>Puntaje</th>
-                                    <th>Vulnerabilidad</th>
-                                    <th>Fecha Registro</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for p in postulantes %}
-                                <tr>
-                                    <td>{{ p.identificacion }}</td>
-                                    <td>{{ p.nombres }} {{ p.apellidos }}</td>
-                                    <td style="color: #2e7d32; font-weight: bold;">{{ p.puntaje }}</td>
-                                    <td>{{ p.vulnerabilidad }}</td>
-                                    <td>{{ p.fecha_inscripcion.strftime('%Y-%m-%d') }}</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </details>
                 
                 <details style="margin-bottom: 20px; border-radius: 10px;">
                     <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
@@ -112,6 +80,7 @@
                                     <th>Postulante</th>
                                     <th>Puntaje</th>
                                     <th>Vulnerabilidad</th>
+                                    <th>Fecha de registro</th>
                                     <th>Asignación</th>
                                 </tr>
                             </thead>
@@ -122,6 +91,7 @@
                                     <td>{{ p.nombres }} {{ p.apellidos }}</td>
                                     <td><strong>{{ p.puntaje }}</strong></td>
                                     <td>{{ p.vulnerabilidad }}</td>
+                                    <td>{{ p.fecha_inscripcion.strftime('%Y-%m-%d') }}</td>
                                     <td>
                                         {% if p.asignaciones %}
                                             <b style="color: green;">ASIGNADO: {{ p.asignaciones[0].carrera.nombre }}</b>
