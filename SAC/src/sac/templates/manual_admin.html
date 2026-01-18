@@ -1,11 +1,94 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <title>Manual de Administrador - SAC</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='estilos.css') }}">
+    <title>Manual de Usuario - SAC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        /* Ajustes adicionales para que combine con tu fondo actual */
+        .help-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+            margin-top: 30px;
+        }
+
+        .card-help {
+            background: rgba(255, 255, 255, 0.95); /* Fondo blanco semitransparente para que resalte */
+            color: #ffffff;
+            padding: 25px;
+            border-radius: 15px;
+            border-top: 5px solid #d32f2f; /* El rojo de la ULEAM */
+            box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+            transition: transform 0.3s;
+        }
+
+        .card-help:hover {
+            transform: translateY(-5px);
+        }
+
+        .card-help h2 { color: #d32f2f; margin-top: 0; }
+        .card-help p, .card-help li { color: #1f1e1e; line-height: 1.5; }
+        
+        .step-tag {
+            background: #444444;
+            padding: 4px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            font-weight: bold;
+            display: inline-block;
+            margin-top: 10px;
+        }
+    </style>
 </head>
-<body>
-    
+<body style="background: #ffffff;"> <header>
+        <div class="container">
+            <p class="logo">SAC - Manual</p>
+            <nav>
+                <a href="{{ url_for('admin_panel') }}">Volver al Panel ➜</a>
+            </nav>
+        </div>
+    </header>
+
+    <section id="principal" style="padding: 40px 20px; height: 750px;">
+        <div class="container fondo" style="padding: 40px; border-radius: 20px;">
+            
+            <div style="text-align: center; margin-bottom: 40px;">
+                <h1 style="color: white; font-size: 2.5rem; padding-top: 0px;">Manual del Administrador</h1>
+                <p style="color: #ccc;">Guía rápida para el uso del Sistema de Asignación de Cupos</p>
+            </div>
+
+            <div class="help-grid">
+                <div class="card-help">
+                    <h2>⚖️ Desempate</h2>
+                    <p>Elige entre Mérito (Puntaje) o Vulnerabilidad (Social) según el Art. 51.</p>
+                    <span class="step-tag">Módulo: Configuración</span>
+                </div>
+
+                <div class="card-help">
+                    <h2>🚀 Asignación</h2>
+                    <p>Ejecuta el algoritmo que distribuye los cupos automáticamente.</p>
+                    <span class="step-tag">Módulo: Panel Principal</span>
+                </div>
+
+                <div class="card-help">
+                    <h2>🎓 Carreras</h2>
+                    <p>Gestiona la oferta académica y ajusta los cupos disponibles.</p>
+                    <span class="step-tag">Módulo: Configuración</span>
+                </div>
+
+                <div class="card-help">
+                    <h2>📊 Reportes</h2>
+                    <p>Descarga resultados en PDF o Excel por cada ejecución.</p>
+                    <span class="step-tag">Módulo: Historial</span>
+                </div>
+            </div>
+
+            <div style="text-align: center; margin-top: 50px;">
+                <p style="color: white; opacity: 0.6; font-size: 1.7em;">© 2025 Drink Team 🍺</p>
+            </div>
+        </div>
+    </section>
+
 </body>
 </html>
