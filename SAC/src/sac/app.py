@@ -35,28 +35,50 @@ def index():
 
 @app.route('/login', methods=['POST'])
 def login():
-    correo = request.form.get('correo')
-    contrasena = request.form.get('contrasena')
+    # Recogemos los datos del formulario
+    email_ingresado = request.form.get('correo')
+    # Usamos el mismo campo de 'contrasena' para la clave del admin 
+    # o para la identificación del postulante
+    password_o_id = request.form.get('contrasena') 
 
     conn = get_db_connection()
     cursor = conn.cursor()
     
-    # Validamos contra tu tabla 'administradores'
-    cursor.execute("SELECT * FROM administradores WHERE correo = ? AND contrasena = ?", (correo, contrasena))
+    # 1. INTENTAR LOGIN COMO ADMINISTRADOR
+    cursor.execute("SELECT * FROM administradores WHERE correo = ? AND contrasena = ?", 
+                   (email_ingresado, password_o_id))
     admin = cursor.fetchone()
-    conn.close()
 
     if admin:
-        session['correo'] = correo
-        session['admin_id'] = admin.id_admin
-        return redirect(url_for('admin_panel'))    
-    elif correo == "postulante@uleam.edu.ec" and contrasena == "78910":
-        session['correo'] = correo
-        return render_template('postulante.html')
-    else:
-        # SI ESTÁ MAL: Usamos flash para el error y redirigimos al index
-        flash("Correo o contraseña incorrectos. Intente de nuevo.", "error")
+        session['user_type'] = 'admin'
+        session['correo'] = admin[1] # Suponiendo que el correo es la col 1
+        conn.close()
+        return redirect(url_for('admin_panel'))
+
+    # 2. SI NO ES ADMIN, INTENTAR COMO POSTULANTE
+    cursor.execute("SELECT * FROM postulantes WHERE correo = ? AND identificacion = ?", 
+                   (email_ingresado, password_o_id))
+    postulante = cursor.fetchone()
+    conn.close()
+
+    if postulante:
+        session['user_type'] = 'postulante'
+        session['user_id'] = postulante[0] # Su identificación
+        session['user_name'] = f"{postulante[1]} {postulante[2]}" # Nombres y Apellidos
+        
+        # IMPORTANTE: Usa redirect para el perfil, no render_template directamente
+        return redirect(url_for('perfil_postulante'))
+    
+    # 3. SI NINGUNO COINCIDE
+    flash("Credenciales incorrectas. Verifique su correo, contraseña o cédula.", "error")
+    return redirect(url_for('index'))
+
+@app.route('/mi-perfil')
+def perfil_postulante():
+    if session.get('user_type') != 'postulante' or 'user_id' not in session:
+        session.clear()           # ← Limpia sesión inconsistente
         return redirect(url_for('index'))
+    return render_template('postulante.html')
 
 @app.route('/logout')
 def logout():
@@ -65,8 +87,10 @@ def logout():
 
 @app.route('/admin-panel')
 def admin_panel():
-    if not session.get('correo'):
+    if session.get('user_type') != 'admin' or 'correo' not in session:
+        session.clear()
         return redirect(url_for('index'))
+    # ... resto del código
 
     conn = get_db_connection()
     cursor = conn.cursor()
@@ -451,6 +475,15 @@ def manual_admin():
 
 @app.route('/ayuda')
 def ayuda():
+    # Fuerza limpieza de cualquier sesión inconsistente o vieja
+    if 'user_type' in session:
+        if session.get('user_type') == 'postulante' and 'user_id' not in session:
+            session.clear()
+        elif session.get('user_type') == 'admin' and 'correo' not in session:
+            session.clear()
+        # Opcional: limpiar SIEMPRE al entrar a páginas públicas
+        # session.clear()   ← descomenta solo para probar
+
     return render_template('ayuda.html')
 
 if __name__ == '__main__':

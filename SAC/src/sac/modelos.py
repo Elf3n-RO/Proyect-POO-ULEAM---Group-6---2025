@@ -2,7 +2,7 @@ from datetime import datetime
 from typing import List
 
 class Postulante:
-    def __init__(self, tipo_documento, identificacion, nombres, apellidos, puntaje, fecha_inscripcion, has_titulo_superior=False):
+    def __init__(self, tipo_documento, identificacion, nombres, apellidos, puntaje, fecha_inscripcion, has_titulo_superior=False, correo=None):
         self.tipo_documento = tipo_documento
         self.identificacion = identificacion
         self.nombres = nombres.upper()
@@ -10,6 +10,7 @@ class Postulante:
         self.puntaje = puntaje
         self.fecha_inscripcion = fecha_inscripcion
         self.has_titulo_superior = has_titulo_superior
+        self.correo = correo
 
         # Campos de desempate (se llenan desde SQL Server)
         self.condicion_socioeconomica = "NO"
