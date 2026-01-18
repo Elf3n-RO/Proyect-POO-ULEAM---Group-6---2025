@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <title>Detalle de Asignación</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+</head>
+<body style="background: #1a1a2e; color: white; padding: 40px;">
+    <div class="container">
+        <a href="/admin-panel" style="color: #d32f2f; text-decoration: none;">← Volver al Panel</a>
+        <h1 style="margin-top: 20px;">Estudiantes Asignados en la Ejecución #{{ id_p }}</h1>
+        
+        <table class="tabla-datos" style="width: 100%; margin-top: 20px;">
+            <thead>
+                <tr>
+                    <th>Identificación</th>
+                    <th>Nombres y Apellidos</th>
+                    <th>Carrera Asignada</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for e in estudiantes %}
+                <tr>
+                    <td>{{ e.identificacion }}</td>
+                    <td>{{ e.nombres }} {{ e.apellidos }}</td>
+                    <td style="color: #ffc107; font-weight: bold;">{{ e.carrera }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>

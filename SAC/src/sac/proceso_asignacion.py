@@ -1,93 +1,51 @@
 from datetime import datetime
 from interfaz import IReportable
-from conexion import obtener_conexion
-
 
 class ProcesoAsignacion(IReportable):
-
     def __init__(self, desempate_strategy, senescyt):
         self.fechaEjecucion = datetime.now()
         self._desempate_strategy = desempate_strategy
         self._senescyt = senescyt
+        self.postulantes = []  # Se llena desde app.py
+        self.carreras = []    # Se llena desde app.py
 
     def ejecutarAsignacion(self) -> str:
-        self.procesarAsignacionPorSegmento()
-        return "Asignación ejecutada (Art. 51)."
+        if not self.postulantes:
+            return "Error: No hay postulantes cargados."
 
-    def procesarAsignacionPorSegmento(self) -> str:
-        conn = obtener_conexion()
-        cursor = conn.cursor()
+        # 1. Ordenar postulantes por puntaje (y desempate según estrategia)
+        # Usamos una función que aplica tu estrategia de desempate
+        from functools import cmp_to_key
+        
+        def comparar_postulantes(p1, p2):
+            if p1.puntaje != p2.puntaje:
+                return 1 if p1.puntaje < p2.puntaje else -1
+            # Si hay empate en puntaje, usar la estrategia (Vulnerabilidad o Mérito)
+            return -1 if self._desempate_strategy.comparar(p1, p2) else 1
 
-        # 🔹 Estudiantes ordenados por puntaje y prioridad
-        cursor.execute("""
-            SELECT  
-                e.id_postulante,
-                c.id_carrera
-            FROM postulantes e
-            LEFT JOIN asignaciones a ON e.id_postulante = a.id_postulante
-            JOIN carreras c ON e.id_carrera = c.id_carrera
-            WHERE a.id_postulante IS NULL
-                AND c.cupos_disponibles > 0
-            ORDER BY  
-                e.puntaje DESC,
-                e.prioridad ASC;
-        """)
+        self.postulantes.sort(key=cmp_to_key(comparar_postulantes))
 
-        registros = cursor.fetchall()
+        contador_asignados = 0
 
-        for id_postulante, id_carrera in registros:
+        # 2. Asignación lógica
+        for postulante in self.postulantes:
+            # Revisar las preferencias del postulante por orden de prioridad
+            # Ordenamos sus preferencias internamente por el atributo prioridad
+            postulante.preferenciaCarrera.sort(key=lambda x: x.prioridad)
+            
+            for preferencia in postulante.preferenciaCarrera:
+                carrera = preferencia.carrera
+                
+                # Intentar asignar cupo usando el método de la clase Carrera
+                # Este método ya resta de cuposDisponibles y cuposPorSegmento
+                if carrera.asignarCupo(postulante):
+                    from modelos import AsignacionCupo
+                    nueva_asignacion = AsignacionCupo(postulante, carrera)
+                    postulante.asignaciones.append(nueva_asignacion)
+                    contador_asignados += 1
+                    break # Cupo asignado, pasar al siguiente estudiante
 
-            # 🔹 Verificar cupos actualizados
-            cursor.execute("""
-                SELECT cupos_disponibles
-                FROM carreras
-                WHERE id_carrera = ?
-            """, (id_carrera,))
+        return f"Proceso completado. Se asignaron {contador_asignados} cupos con éxito."
 
-            resultado = cursor.fetchone()
-
-            if not resultado:
-                continue
-
-            cupos = resultado[0]
-
-            if cupos > 0:
-                # 🔹 Registrar asignación
-                cursor.execute("""
-                    INSERT INTO asignaciones (
-                        id_postulante,
-                        id_carrera,
-                        fecha_asignacion,
-                        aceptado
-                    )
-                    VALUES (?, ?, GETDATE(), 1)
-                """, (id_postulante, id_carrera))
-
-                # 🔹 Actualizar cupos
-                cursor.execute("""
-                    UPDATE carreras
-                    SET cupos_disponibles = cupos_disponibles - 1
-                    WHERE id_carrera = ?
-                """, (id_carrera,))
-
-        conn.commit()
-        conn.close()
-        return "Asignación por segmento procesada."
-
-    def generarReportes(self) -> str:
-        return "Reportes de asignación generados."
-
-    def generarReporteConsolidado(self) -> str:
-        conn = obtener_conexion()
-        cursor = conn.cursor()
-
-        cursor.execute("""
-            SELECT COUNT(*) 
-            FROM asignaciones
-            WHERE aceptado = 1
-        """)
-
-        total = cursor.fetchone()[0]
-        conn.close()
-
-        return f"Consolidado: {total} cupos aceptados."
+    def generarReportes(self): return "Reporte generado"
+    def generarReporteConsolidado(self): return "Consolidado generado"

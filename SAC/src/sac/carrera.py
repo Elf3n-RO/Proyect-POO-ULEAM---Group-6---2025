@@ -23,11 +23,20 @@ class Carrera(ICupoManager):
         return self.cuposPorSegmento.get(segmento, 0) > 0
 
     def asignarCupo(self, postulante: 'Postulante') -> bool:
+        # Si no se han calculado segmentos, forzamos el cálculo
+        if not self.cuposPorSegmento:
+            self.segmentarCupos()
+            
         segmento = postulante.segmentos[0] if postulante.segmentos else 'PoblacionGeneral'
-        if self.verificarDisponibilidad(segmento):
-            self.cuposPorSegmento[segmento] -= 1
+        
+        # Lógica simplificada: si hay cupos generales, asignar
+        if self.cuposDisponibles > 0:
+            if segmento in self.cuposPorSegmento and self.cuposPorSegmento[segmento] > 0:
+                self.cuposPorSegmento[segmento] -= 1
+            
             self.cuposDisponibles -= 1
-            from .modelos import AsignacionCupo
+            # Importación local para evitar error circular
+            from modelos import AsignacionCupo
             asignacion = AsignacionCupo(postulante, self)
             postulante.asignaciones.append(asignacion)
             return True

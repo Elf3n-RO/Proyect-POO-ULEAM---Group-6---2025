@@ -24,8 +24,7 @@
         <div class="container">
             <p class="logo">SAC</p>
             <nav>
-                <a href="{{ url_for('admin_panel') }}">Volver al Panel</a>
-                <a href="/logout">Cerrar Sesión</a>
+                <a href="{{ url_for('admin_panel') }}">Volver al Panel ➜]</a>
             </nav>
         </div>
     </header>
@@ -97,9 +96,14 @@ function mostrarFormularioAlta() {
                 <h2 class="seccion-titulo" style="color: black; border-color: darkred;">⚖️ Parámetros de Desempate</h2>
                 <form action="/set-desempate" method="POST">
                     <label style="color: #333;">Prioridad de Desempate (Art. 51):</label>
-                    <select name="estrategia" style="width: 100%; padding: 10px; border-radius: 10px; margin: 10px 0;">
-                        <option value="vuln">1. Índice de Vulnerabilidad -> 2. Fecha Inscripción</option>
-                        <option value="merito">1. Mérito Académico -> 2. Vulnerabilidad</option>
+                    <select name="prioridad_desempate" style="width: 100%; padding: 10px; border-radius: 10px; margin: 10px 0;">
+                        <option value="vuln" {% if estrategia == 'vulnerabilidad' %}selected{% endif %}>
+                            1. Índice de Vulnerabilidad -> 2. Fecha Inscripción
+                        </option>
+                        
+                        <option value="merito" {% if estrategia == 'puntaje' %}selected{% endif %}>
+                            1. Mérito Académico -> 2. Vulnerabilidad
+                        </option>
                     </select>
                     <button type="submit" style="width: auto;">Guardar Preferencia</button>
                 </form>
@@ -113,8 +117,8 @@ function mostrarFormularioAlta() {
     <footer id="ayuda">
         <div class="container">
             <nav>
-                <a href="#">Soporte Técnico</a>
-                <a href="#">Manual de Usuario Admin</a>
+                <a href="/soporte">🛠️Soporte Técnico</a>
+                <a href="/manual-admin">📖Manual de Usuario Admin</a>
             </nav>
         </div>
     </footer>
