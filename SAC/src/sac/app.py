@@ -282,7 +282,11 @@ def detalle_historial(id_proceso):
     
     # Traer datos del proceso y lista de alumnos asignados
     cursor.execute("""
-        SELECT p.nombres, p.apellidos, p.identificacion, c.nombre as carrera
+        SELECT 
+            p.identificacion, 
+            p.nombres, 
+            p.apellidos, 
+            c.nombre AS carrera 
         FROM asignaciones_finales af
         JOIN postulantes p ON af.identificacion_postulante = p.identificacion
         JOIN carreras c ON af.codigo_carrera = c.codigo
@@ -450,4 +454,4 @@ def ayuda():
     return render_template('ayuda.html')
 
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(debug=True)

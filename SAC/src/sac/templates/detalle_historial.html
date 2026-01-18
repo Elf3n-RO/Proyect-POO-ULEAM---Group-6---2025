@@ -19,11 +19,14 @@
                 </tr>
             </thead>
             <tbody>
-                {% for e in estudiantes %}
+                {% for est in estudiantes %}
                 <tr>
-                    <td>{{ e.identificacion }}</td>
-                    <td>{{ e.nombres }} {{ e.apellidos }}</td>
-                    <td style="color: #ffc107; font-weight: bold;">{{ e.carrera }}</td>
+                    <td>{{ est.identificacion }}</td>
+                    <td>{{ est.nombres }} {{ est.apellidos }}</td>
+                    <td>{{ est.carrera }}</td> </tr>
+                {% else %}
+                <tr>
+                    <td colspan="3" style="text-align: center;">No hay datos para esta ejecución.</td>
                 </tr>
                 {% endfor %}
             </tbody>
