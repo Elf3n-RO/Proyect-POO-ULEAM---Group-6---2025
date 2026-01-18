@@ -188,8 +188,8 @@ button:hover {
 }
 .tabla-datos th, .tabla-datos td { padding: 12px; border: 1px solid #ccc; text-align: left; }
 .tabla-datos th { background: #d32f2f; color: white; text-transform: uppercase; font-size: 0.9em; }
-.btn-logica { background: #28a745; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
-.btn-logica:hover { background: #218838; transform: scale(1.02); }
+.btn-logica { background: #0d4a1a; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+.btn-logica:hover { background: #1e7437; transform: scale(1.02); }
 .msg-logica { background: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
         
 .titulo-seccion { 

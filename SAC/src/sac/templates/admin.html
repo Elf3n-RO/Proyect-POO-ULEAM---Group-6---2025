@@ -8,7 +8,6 @@
 
 <body>
     <header>
-        <div class="imagen"></div>
         <div class="container">
             <p class="logo">SAC</p>
             <nav>
@@ -35,7 +34,7 @@
             <h1 style="text-align: center; margin-bottom: 30px;">Panel de Administración SAC</h1>
 
             <details open style="margin-bottom: 20px; background: rgba(255,255,255,0.1); border-radius: 8px;">
-                <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between; background-color: rgba(85, 86, 87, 0.9);">
                     🏷️ Ofertas Académicas
                     <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
                 </summary>
@@ -65,7 +64,7 @@
             </details>
                 
                 <details style="margin-bottom: 20px; border-radius: 10px;">
-                    <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;">
+                    <summary class="titulo-seccion" style="cursor: pointer; list-style: none; display: flex; align-items: center; justify-content: space-between;background-color: rgba(85, 86, 87, 0.9)">
                         👥 Postulantes y Estados de Asignación
                         <span style="font-size: 0.7em;">(Haz clic para contraer/expandir)</span>
                     </summary>
@@ -130,11 +129,11 @@
             </div>
 
             </div>
-            <h2 class="titulo-seccion" style="text-align: left; margin-top: 40px; margin-bottom: 20px; margin-left: 40px;">📜 Historial de Ejecuciones</h2>
+            <h2 class="titulo-seccion" style="background-color:rgba(85, 86, 87, 0.9); text-align: left; margin-top: 40px; margin-bottom: 20px; margin-left: 40px; margin-right: 40px;">📜 Historial de Ejecuciones</h2>
             <div class="contenedor-historial" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; padding: 20px;">
                 {% for h in historial %}
                 <a href="/historial/{{ h.id_proceso }}" style="text-decoration: none;">
-                    <div class="card-historial" style="background: rgba(44, 62, 80, 0.9); border-radius: 12px; padding: 20px; border-left: 6px solid #d32f2f; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;">
+                    <div class="card-historial" style="background: rgba(44, 62, 80, 0.7); border-radius: 12px; padding: 20px; border-left: 6px solid #d32f2f; box-shadow: 0 4px 15px rgba(0,0,0,0.3); transition: transform 0.2s;">
                         <div style="color: white;">
                             <h3 style="margin: 0 0 10px 0; color: #d32f2f;">Ejecución #{{ h.id_proceso }}</h3>
                             <p style="margin: 5px 0;">📅 <b>Fecha:</b> {{ h.fecha_ejecucion.strftime('%Y-%m-%d %H:%M') }}</p>
