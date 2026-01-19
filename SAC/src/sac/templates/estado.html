@@ -1,12 +1,51 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Estado de Postulación</title>
+    <title>Estado de Asignación - SAC</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+    <style>
+        .result-container { max-width: 550px; margin: 50px auto; background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 10px 30px rgba(0,0,0,0.5); color: #333; backdrop-filter: blur(10px); }
+        .result-header { background: #d32f2f; color: white; padding: 10px; text-align: center; }
+        .result-body { padding: 30px; text-align: center; }
+        .cupo-box { border: 2px dashed #d32f2f; padding: 10px; margin: 0px 0; border-radius: 10px; background: #fff5f5; }
+        .btn-volver { display: inline-block; padding: 12px 25px; background: #1a1a2e; color: white; text-decoration: none; border-radius: 25px; margin-top: 20px; }
+        .status-icon { font-size: 50px; margin-bottom: 10px; }
+    </style>
 </head>
-<body>
-    <h1>Estado de su Postulación</h1>
-    <p>{{ estado_postulacion }}</p>
+<body style="background: #1a1a2e; font-family: 'Segoe UI', sans-serif;">
+    <section id="principal" style="height: auto;">
+
+        <div class="result-container">
+            <div class="result-header">
+                <h1 style="margin-top: 0px;">Estado de Postulación</h1>
+            <p>Periodo Académico 2025</p>
+        </div>
+
+        <div class="result-body">
+            {% if asignacion and asignacion.carrera %}
+            <div class="status-icon">🎉</div>
+            <h2 style="color: #2e7d32;">¡Hola, {{ asignacion.nombre_estudiante }}!</h2>
+            <p>Se te ha asignado un cupo exitosamente en:</p>
+            
+            <div class="cupo-box">
+                <h2 style="margin: 0; color: #d32f2f;">{{ asignacion.carrera }}</h2>
+                <p style="margin: 5px 0; color: #666;">Código de Carrera: {{ asignacion.codigo }}</p>
+            </div>
+            
+            <p style="font-size: 0.9em; color: #777;">Presenta tu cédula para el proceso de matriculación.</p>
+            {% elif asignacion %}
+            <div class="status-icon">⏳</div>
+            <h2>Hola, {{ asignacion.nombre_estudiante }}</h2>
+            <p>Tu proceso está en curso, pero aún no registras una asignación de cupo.</p>
+            {% else %}
+            <div class="status-icon">❌</div>
+            <h2>No se encontraron datos</h2>
+            <p>No pudimos identificar tu registro en el sistema.</p>
+            {% endif %}
+            
+            <a href="{{ url_for('perfil_postulante') }}" class="btn-volver">Volver al Perfil ➜</a>
+        </div>
+    </section>
 </body>
 </html>

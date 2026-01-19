@@ -63,9 +63,10 @@ def login():
 
     if postulante:
         session['user_type'] = 'postulante'
-        session['user_id'] = postulante[0] # Su identificación
-        session['user_name'] = f"{postulante[1]} {postulante[2]}" # Nombres y Apellidos
-        
+        session['user_id'] = postulante[2] # Su identificación
+        session['user_name'] = f"{postulante[3]} {postulante[4]}" # Nombres y Apellidos
+        print("DEBUG LOGIN - Cédula guardada:", session['user_id'])
+        print("DEBUG LOGIN - Nombre guardado:", session['user_name'])
         # IMPORTANTE: Usa redirect para el perfil, no render_template directamente
         return redirect(url_for('perfil_postulante'))
     
@@ -277,18 +278,9 @@ def ejecutar_asignacion():
         if p.asignaciones:
             carrera_cod = p.asignaciones[0].carrera.codigo
             cursor.execute("""
-                INSERT INTO asignaciones_finales (id_proceso, identificacion_postulante, codigo_carrera)
-                VALUES (?, ?, ?)
+                INSERT INTO asignaciones_finales (id_proceso, identificacion_postulante, codigo_carrera, fecha_ejecucion)
+                VALUES (?, ?, ?, GETDATE())
             """, (id_proceso, p.identificacion, carrera_cod))
-
-    for p in proceso.postulantes:
-        if p.asignaciones: # Si el alumno recibió un cupo
-            carrera_asig = p.asignaciones[0].carrera
-            # Guardamos la relación permanente en la nueva tabla
-            cursor.execute("""
-                INSERT INTO asignaciones_finales (identificacion_postulante, codigo_carrera)
-                VALUES (?, ?)
-            """, (p.identificacion, carrera_asig.codigo))
 
     for c in proceso.carreras:
         cursor.execute("UPDATE carreras SET cupos_disponibles = ? WHERE codigo = ?", 
@@ -485,6 +477,42 @@ def ayuda():
         # session.clear()   ← descomenta solo para probar
 
     return render_template('ayuda.html')
+
+@app.route('/ver-estado', methods=['GET', 'POST'])
+def ver_estado():
+  
+    user_id = session['user_id']
+    conn = get_db_connection()
+    cursor = conn.cursor()
+
+    # Usamos JOIN para asegurar que traemos el nombre del alumno y su carrera si existe
+    query = """
+        SELECT 
+            p.nombres, 
+            p.apellidos, 
+            c.nombre AS carrera_nombre,
+            af.codigo_carrera
+        FROM postulantes p
+        LEFT JOIN asignaciones_finales af ON p.identificacion = af.identificacion_postulante
+        LEFT JOIN carreras c ON af.codigo_carrera = c.codigo
+        WHERE p.identificacion = ?
+    """
+    cursor.execute(query, (user_id,))
+    row = cursor.fetchone()
+    conn.close()
+
+    if row:
+        # El HTML espera 'nombre_estudiante', 'carrera' y 'codigo'
+        asignacion_data = {
+            'nombre_estudiante': f"{row[0]} {row[1]}",
+            'carrera': row[2],  # Esto será None si no tiene cupo
+            'codigo': row[3]
+        }
+        return render_template('estado.html', asignacion=asignacion_data)
+    else:
+        return f"DEBUG: No se encontró NINGUNA fila para cédula = '{user_id}'"
+    
+    return render_template('estado.html', asignacion=None)
 
 if __name__ == '__main__':
     app.run(debug=True)
