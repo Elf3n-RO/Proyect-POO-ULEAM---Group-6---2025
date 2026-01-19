@@ -11,7 +11,7 @@
             <p class="logo">SAC</p>
             <nav>
                 {% if session.get('user_type') == 'admin' and session.get('correo') %}
-                    <a href="{{ url_for('admin_panel') }}">Volver al Panel ➜]</a>
+                    <a href="/">Volver al Panel ➜]</a>
                 {% elif session.get('user_type') == 'postulante' and session.get('user_id') %}
                     <a href="{{ url_for('perfil_postulante') }}">Volver a mi perfil ➜]</a>
                 {% else %}
