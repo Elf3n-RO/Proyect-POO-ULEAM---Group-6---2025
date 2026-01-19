@@ -215,81 +215,74 @@ def guardar_configuracion():
 
 @app.route('/ejecutar-asignacion', methods=['POST'])
 def ejecutar_asignacion():
-    # 1. Obtener la estrategia de la sesión
-    est_id = session.get('estrategia_id', 'vuln')
-    from desempate import VulnerabilidadFechaDesempate, MeritoAcademicoDesempate
-    estrategia = MeritoAcademicoDesempate() if est_id == 'merito' else VulnerabilidadFechaDesempate()
-    
-    proceso = ProcesoAsignacion(estrategia, Senescyt())
     conn = get_db_connection()
     cursor = conn.cursor()
 
-    # 2. Cargar Carreras
-    cursor.execute("SELECT id_carrera, codigo, nombre, cupos_totales FROM carreras")
-    carreras_dict = {r.id_carrera: Carrera(r.codigo, r.nombre, r.cupos_totales) for r in cursor.fetchall()}
-    proceso.carreras = list(carreras_dict.values())
+    # 1. OBTENER EL CRITERIO DE CONFIGURACIÓN
+    cursor.execute("SELECT criterio_primario FROM configuracion_sistema WHERE id = 1")
+    config = cursor.fetchone()
+    # Si la config dice 'puntaje', ordenamos por esa columna, de lo contrario por vulnerabilidad
+    criterio_orden = "puntaje" if (config and config[0] == 'puntaje') else "vulnerabilidad"
 
-    # 3. Cargar Postulantes CON sus Preferencias (JOIN)
-    cursor.execute("""
-        SELECT p.*, pref.id_carrera, pref.prioridad 
+    # 2. SELECCIONAR LOS 15 MEJORES QUE NO TENGAN CUPO AÚN
+    # Usamos TOP 15 y ORDER BY DESC para cumplir con tu pedido
+    query_postulantes = f"""
+        SELECT TOP 15 p.id_postulante, p.identificacion, p.nombres, p.apellidos, p.puntaje, p.vulnerabilidad, p.fecha_inscripcion
         FROM postulantes p
-        INNER JOIN preferencias_carrera pref ON p.id_postulante = pref.id_postulante
-        ORDER BY p.id_postulante, pref.prioridad
-    """)
+        WHERE p.identificacion NOT IN (SELECT identificacion_postulante FROM asignaciones_finales)
+        ORDER BY p.{criterio_orden} DESC
+    """
+    cursor.execute(query_postulantes)
+    rows = cursor.fetchall()
     
-    postulantes_map = {}
-    for r in cursor.fetchall():
-        if r.identificacion not in postulantes_map:
-            p = Postulante(r.tipo_documento, r.identificacion, r.nombres, r.apellidos, 
-                           float(r.puntaje), r.fecha_inscripcion)
-            p.vulnerabilidad = float(r.vulnerabilidad)
-            p.merito_academico = r.merito_academico
-            postulantes_map[r.identificacion] = p
-        
-        # Vincular preferencia al objeto
-        obj_p = postulantes_map[r.identificacion]
-        obj_c = carreras_dict.get(r.id_carrera)
-        if obj_c:
-            from modelos import PreferenciaCarrera
-            pref = PreferenciaCarrera(obj_p, obj_c, r.prioridad, obj_c.nombre, r.id_carrera, 0)
-            obj_p.preferenciaCarrera.append(pref)
+    if not rows:
+        conn.close()
+        flash("No hay postulantes pendientes para asignar.")
+        return redirect(url_for('admin_panel'))
 
-    proceso.postulantes = list(postulantes_map.values())
+    # 3. CARGAR CARRERAS PARA VALIDAR CUPOS DISPONIBLES
+    cursor.execute("SELECT id_carrera, codigo, nombre, cupos_disponibles FROM carreras")
+    carreras_db = {r.id_carrera: {"codigo": r.codigo, "cupos": r.cupos_disponibles} for r in cursor.fetchall()}
 
-    # 4. Ejecutar y GUARDAR CAMBIOS
-    res_asignacion = proceso.ejecutarAsignacion() 
-
-    conn = get_db_connection()
-    cursor = conn.cursor()
-    # Contar cuántos asignados hubo realmente
-    total_asignados = sum(1 for p in proceso.postulantes if p.asignaciones)
-     
-    # 1. Crear el registro en el historial
-    usuario = session.get('admin_nombre', 'Administrador Principal')
-    cursor.execute("""
-        INSERT INTO historial_procesos (cupos_asignados, usuario_responsable)
-        OUTPUT INSERTED.id_proceso
-        VALUES (?, ?)
-    """, (total_asignados, usuario))
+    # 4. PROCESAR ASIGNACIÓN LOTE DE 15
+    asignados_esta_tanda = 0
+    cursor.execute("INSERT INTO historial_procesos (usuario_responsable) OUTPUT INSERTED.id_proceso VALUES (?)", 
+                   (session.get('correo', 'Admin'),))
     id_proceso = cursor.fetchone()[0]
-    
-    # 2. Guardar el detalle vinculando al ID del proceso
-    for p in proceso.postulantes:
-        if p.asignaciones:
-            carrera_cod = p.asignaciones[0].carrera.codigo
-            cursor.execute("""
-                INSERT INTO asignaciones_finales (id_proceso, identificacion_postulante, codigo_carrera, fecha_ejecucion)
-                VALUES (?, ?, ?, GETDATE())
-            """, (id_proceso, p.identificacion, carrera_cod))
 
-    for c in proceso.carreras:
-        cursor.execute("UPDATE carreras SET cupos_disponibles = ? WHERE codigo = ?", 
-                       (c.cuposDisponibles, c.codigo))
+    for p_row in rows:
+        id_postulante = p_row.id_postulante
+        identificacion = p_row.identificacion
+        
+        # Buscar la mejor preferencia del alumno que tenga cupos
+        cursor.execute("""
+            SELECT TOP 1 id_carrera FROM preferencias_carrera 
+            WHERE id_postulante = ? ORDER BY prioridad ASC
+        """, (id_postulante,))
+        pref = cursor.fetchone()
+
+        if pref:
+            id_carrera_pref = pref[0]
+            if carreras_db[id_carrera_pref]["cupos"] > 0:
+                # Registrar Asignación
+                cursor.execute("""
+                    INSERT INTO asignaciones_finales (id_proceso, identificacion_postulante, codigo_carrera, fecha_ejecucion)
+                    VALUES (?, ?, ?, GETDATE())
+                """, (id_proceso, identificacion, carreras_db[id_carrera_pref]["codigo"]))
+                
+                # Descontar Cupo
+                cursor.execute("UPDATE carreras SET cupos_disponibles = cupos_disponibles - 1 WHERE id_carrera = ?", (id_carrera_pref,))
+                carreras_db[id_carrera_pref]["cupos"] -= 1
+                asignados_esta_tanda += 1
+
+    # Actualizar el total en el historial
+    cursor.execute("UPDATE historial_procesos SET cupos_asignados = ? WHERE id_proceso = ?", (asignados_esta_tanda, id_proceso))
     
-    conn.commit() # Esto hace que los cambios sean reales en SQL
+    conn.commit()
     conn.close()
 
-    return redirect(url_for('admin_panel', mensaje=res_asignacion))
+    flash(f"Éxito: Se procesaron los 15 mejores candidatos. Cupos asignados en esta tanda: {asignados_esta_tanda}")
+    return redirect(url_for('admin_panel'))
 
 @app.route('/historial/<int:id_proceso>')
 def detalle_historial(id_proceso):
