@@ -10,7 +10,13 @@
         <div class="container">
             <p class="logo">SAC</p>
             <nav>
-                <a href="/">Volver al Inicio ➜]</a>
+                {% if session.get('user_type') == 'admin' and session.get('correo') %}
+                    <a href="{{ url_for('admin_panel') }}">Volver al Panel ➜]</a>
+                {% elif session.get('user_type') == 'postulante' and session.get('user_id') %}
+                    <a href="{{ url_for('perfil_postulante') }}">Volver a mi perfil ➜]</a>
+                {% else %}
+                    <a href="{{ url_for('index') }}">Volver al Inicio ➜]</a>
+                {% endif %}
                 <a>Drink team🍺</a>
             </nav>
         </div>
