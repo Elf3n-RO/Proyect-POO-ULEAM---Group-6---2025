@@ -1,74 +1,49 @@
-/* ================================
-   ESTILOS GENERALES DE LA PÁGINA
-   ================================ */
-
-/* Reinicia márgenes y rellenos por defecto del navegador
-   y facilita el control de tamaños con box-sizing */
-* {
+/*Estilo general de la pagina*/
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
 
-/* Fuente general del sitio */
 body {
     font-family: 'Times New Roman', Times, serif;
-    margin: 0;
+    margin: 0;   
 }
 
-/* ================================
-   ESTILOS DE TEXTO
-   ================================ */
-
-/* Tamaño de texto para párrafos */
-p {
-    font-size: 2em;
+/*Estilo de texto*/
+p{ font-size: 2em; }
+h1 { font-size: 2em; 
+     color: white;
+     background-position: center;
+     margin-bottom: 50px;
+     padding-top: 25px;
 }
 
-/* Estilo del título principal */
-h1 {
-    font-size: 2em;
-    color: white;                 /* Color del texto */
-    background-position: center;  /* Centra el fondo */
-    margin-bottom: 50px;          /* Separación inferior */
-    padding-top: 25px;            /* Espacio interno superior */
-}
-
-/* ================================
-   CONTENEDOR GENERAL
-   ================================ */
-
-/* Centra el contenido y limita el ancho máximo */
+/*Estilo de general*/
 .container {
     max-width: 1400px;
     margin: auto;
 }
 
-/* ================================
-   HEADER / ENCABEZADO
-   ================================ */
-
-/* Estilo general del encabezado */
+/*Estilo de header*/
 header {
     height: 80px; 
-    background-image: url('media/gorro-de-graduacion.png'); /* Ícono del header */
-    background-size: 40px 40px;      /* Tamaño del ícono */
-    background-repeat: no-repeat;    /* Evita repetición */
-    background-position-y: center;   /* Centrado vertical */
-    background-position-x: top;      /* Alineado a la izquierda */
+    background-image: url('media/gorro-de-graduacion.png');
+    background-size: 40px 40px;
+    background-repeat: no-repeat;
+    background-position-y: center;
+    background-position-x: top;  
     margin-left: 20px;
 }
 
-/* Organización interna del header */
 header .container {
-    display: flex;                   /* Layout flexible */
-    flex-direction: row;             /* Elementos en fila */
-    justify-content: space-between;  /* Espacio entre logo y menú */
+    flex-direction: row;
+    justify-content: space-between;
+    display: flex;
     color: rgba(254, 254, 254, 0.893);
 }
 
-/* Estilo del logo */
-header .logo {
+header .logo{
     margin: 0;
     padding: 25px 30px;
     font-weight: bold;
@@ -76,7 +51,6 @@ header .logo {
     font-size: 2em;
 }
 
-/* Menú de navegación */
 header nav {
     display: flex;
     flex-direction: row;
@@ -85,77 +59,59 @@ header nav {
     padding-right: 20px;
 }
 
-/* Enlaces del menú */
 header a {
     padding: 15px 12px;
-    text-decoration: none;  /* Quita subrayado */
+    text-decoration: none;
     font-weight: bold;
     color: black;
 }
 
-/* Efecto hover en enlaces */
 header a:hover {
     color: darkred;
 }
 
-/* ================================
-   SECCIÓN PRINCIPAL
-   ================================ */
-
+/*Estilo de seccion principal*/
 #principal {
     height: 550px;
-    display: flex;
     justify-content: center;
     align-items: center;
     text-align: center;
-
-    /* Imagen de fondo con degradado oscuro */
     background-image: linear-gradient(
         0deg,
         rgba(0,0,0,0.5),
         rgba(0,0,0,0.5)
-    ),
-    url("media/main.jpg");
-
+    )
+    ,url("media/main.jpg");
     background-repeat: no-repeat;
     background-size: cover;
     background-position: top center;
 }
 
-/* ================================
-   FORMULARIO (POST)
-   ================================ */
-
-/* Contenedor del formulario */
 .POST {
     display: flex;
-    flex-direction: column; /* Elementos en columna */
+    flex-direction: column;
     width: 300px;
     margin: auto;
 }
 
-/* Separación entre elementos del formulario */
 .POST label,
 .POST input,
 .POST button {
     margin-bottom: 15px;
 }
-
-/* Etiquetas */
 label {
     font-size: 1.2em;
-    color: white;
+    color: rgb(255, 255, 255);
     text-align: left;
 }
 
-/* Campos de entrada */
 input {
     font-size: 1em;
     padding: 10px;
     border-radius: 10px;
+    background-position: center;
 }
 
-/* Botones generales */
 button {
     font-size: 1em;
     font-weight: bold;
@@ -168,24 +124,20 @@ button {
     background-color: red;
 }
 
-/* Efecto hover en botones */
 button:hover {
     background-color: darkred;
 }
 
-/* ================================
-   SECCIÓN DE AYUDA
-   ================================ */
-
+/*Estilo de seccion ayuda*/
 #ayuda {
     height: 80px;
     justify-content: center;
     align-items: center;
     text-align: center;
-    background-color: white;
+    background-color: rgb(255, 255, 255); 
+    
 }
 
-/* Enlaces de la sección ayuda */
 #ayuda a {
     padding: 15px 12px;
     text-decoration: none;
@@ -193,12 +145,10 @@ button:hover {
     color: black;
 }
 
-/* Hover en enlaces de ayuda */
 #ayuda a:hover {
     color: darkred;
 }
 
-/* Contenedor interno de ayuda */
 #ayuda .container {
     display: flex;
     flex-direction: row;
@@ -207,7 +157,6 @@ button:hover {
     height: 100%;
 }
 
-/* Botones dentro de la sección ayuda */
 #ayuda button {
     font-size: 1em;
     font-weight: bold;
@@ -220,105 +169,49 @@ button:hover {
     background-color: red;
 }
 
-/* Hover de botones en ayuda */
 #ayuda button:hover {
     background-color: darkred;
 }
 
-/* ================================
-   TABLAS
-   ================================ */
 
-/* Tabla de datos */
+
+/* Estilos para la tabla*/
 .tabla-datos { 
     width: 100%; 
-    border-collapse: collapse; /* Une bordes */
+    border-collapse: collapse; 
     margin-top: 15px; 
-    margin-bottom: 30px;
     background: white; 
     color: black; 
     border-radius: 8px; 
     overflow: hidden; 
+    margin-bottom: 30px;
 }
-
-/* Celdas de la tabla */
-.tabla-datos th,
-.tabla-datos td {
-    padding: 12px;
-    border: 1px solid #ccc;
-    text-align: left;
-}
-
-/* Encabezados de la tabla */
-.tabla-datos th {
-    background: #d32f2f;
-    color: white;
-    text-transform: uppercase;
-    font-size: 0.9em;
-}
-
-/* ================================
-   BOTONES Y MENSAJES LÓGICOS
-   ================================ */
-
-/* Botón especial */
-.btn-logica {
-    background: #0d4a1a;
-    color: white;
-    padding: 15px 30px;
-    border: none;
-    border-radius: 8px;
-    cursor: pointer;
-    margin-top: 10px;
-    font-weight: bold;
-    font-size: 1.1em;
-    transition: 0.3s;
-}
-
-/* Hover del botón lógico */
-.btn-logica:hover {
-    background: #1e7437;
-    transform: scale(1.02);
-}
-
-/* Mensaje informativo */
-.msg-logica {
-    background: #e8f5e9;
-    color: #2e7d32;
-    padding: 10px;
-    margin: 10px 0;
-    border-radius: 5px;
-    font-weight: bold;
-}
-
-/* ================================
-   TÍTULOS DE SECCIÓN
-   ================================ */
-
+.tabla-datos th, .tabla-datos td { padding: 12px; border: 1px solid #ccc; text-align: left; }
+.tabla-datos th { background: #d32f2f; color: white; text-transform: uppercase; font-size: 0.9em; }
+.btn-logica { background: #0d4a1a; color: white; padding: 15px 30px; border: none; border-radius: 8px; cursor: pointer; margin-top: 10px; font-weight: bold; font-size: 1.1em; transition: 0.3s; }
+.btn-logica:hover { background: #1e7437; transform: scale(1.02); }
+.msg-logica { background: #e8f5e9; color: #2e7d32; padding: 10px; margin: 10px 0; border-radius: 5px; font-weight: bold; }
+        
 .titulo-seccion { 
     color: white; 
-    border-left: 5px solid #d32f2f;
-    padding-left: 15px;
-    margin-top: 40px;
+    border-left: 5px solid #d32f2f; 
+    padding-left: 15px; 
+    margin-top: 40px; 
     font-size: 1.8em;
 }
 
-/* ================================
-   DETAILS / SUMMARY
-   ================================ */
-
-/* Quita la flecha por defecto en Chrome y Safari */
+/* Quita la flecha por defecto de Chrome/Safari */
 summary::-webkit-details-marker {
     display: none;
 }
 
-/* Efecto hover en el título desplegable */
+/* Efecto al pasar el mouse por el título desplegable */
 summary:hover {
-    background: #b71c1c;
+    background: #b71c1c; /* Un rojo más oscuro */
     transition: 0.3s;
 }
 
-/* Estilo cuando el details está abierto */
+/* Animación suave al abrir */
 details[open] summary {
     border-bottom: 2px solid white;
     margin-bottom: 10px;
